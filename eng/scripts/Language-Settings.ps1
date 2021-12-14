@@ -352,7 +352,7 @@ function ValidatePackage($groupId, $artifactId, $version, $DocValidationImageId)
   # Add more validation by replicating as much of the docs CI process as
   # possible
   # https://github.com/Azure/azure-sdk-for-python/issues/20109
-  if (!$DocValidationImageId) 
+  if ($DocValidationImageId) 
   {
     Write-Host "Validating using mvn command directly on $artifactId."
     return FallbackValidation -artifactNamePrefix $artifactNamePrefix -workingDirectory $packageDirectory
