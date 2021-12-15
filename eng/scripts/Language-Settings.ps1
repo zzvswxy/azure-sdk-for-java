@@ -337,6 +337,7 @@ function PackageDependenciesResolve($artifactNamePrefix, $packageDirectory) {
 }
 
 function ValidatePackage($groupId, $artifactId, $version, $DocValidationImageId) {
+  Write-Host "2. $groupId"
   $workingDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "validation"
   if (!(Test-Path $workingDirectory)) {
     New-Item -ItemType Directory -Force -Path $workingDirectory | Out-Null
@@ -366,13 +367,14 @@ function ValidatePackage($groupId, $artifactId, $version, $DocValidationImageId)
 
 function FallbackValidation ($artifactNamePrefix, $workingDirectory) 
 {
+  Write-Host "4. $artifactNamePrefix "
   return (SourcePackageHasComFolder $artifactNamePrefix $workingDirectory) `
     -and (PackageDependenciesResolve $artifactNamePrefix $workingDirectory)
 }
 
 function DockerValidation($packageName, $packageVersion, $groupId, $DocValidationImageId, $workingdirectory) 
 {
-
+  Write-Host "3.$groupId"
   $output = docker run -v "${workingDirectory}:/workdir/out" `
     -e TARGET_PACKAGE=$packageName -e TARGET_VERSION=$packageVersion -e TARGET_GROUP_ID=$groupId -t $DocValidationImageId 2>&1 
   # The docker exit codes: https://docs.docker.com/engine/reference/run/#exit-status
@@ -659,6 +661,7 @@ function Validate-java-DocMsPackages ($PackageInfo, $DocValidationImageId)
 {
   if (!(ValidatePackage $PackageInfo.Group $PackageInfo.Name $PackageInfo.Version $DocValidationImageId)) 
   {
+    Write-Host "1. $($PackageInfo.Group)"
     Write-Error "Package $($PackageInfo.Name) failed on validation" -ErrorAction Continue
   }
   return
