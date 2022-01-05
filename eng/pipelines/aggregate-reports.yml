@@ -59,6 +59,14 @@ stages:
             publishJUnitResults: false
             goals: 'verify site:site site:stage'
 
+        - pwsh: |
+            New-Item -Force -ItemType directory -Path $(Build.SourcesDirectory)/eng/bomgenerator/inputdir
+            Copy-Item $(Build.SourcesDirectory)/sdk/boms/azure-sdk-bom/pom.xml $(Build.SourcesDirectory)/eng/bomgenerator/inputdir
+
+            Copy-Item $(Build.SourcesDirectory)/eng/versioning/version_client.txt $(Build.SourcesDirectory)/eng/bomgenerator/inputdir
+          displayName: 'Prepare for BOM validation.'
+          condition: succeededOrFailed()
+
         - task: Maven@3
           condition: succeededOrFailed()
           displayName: 'Generate BOM Reports'
@@ -109,7 +117,7 @@ stages:
           displayName: 'Copy reports to artifact staging'
 
         - pwsh: |
-            Copy-Item eng/bomgenerator/target/dependency_conflictlist.html $(Build.ArtifactStagingDirectory)/staging
+            Copy-Item eng/bomgenerator/outputdir/dependency_conflictlist.html $(Build.ArtifactStagingDirectory)/staging
 
           displayName: 'Copy BOM report to artifact staging'
           condition: succeededOrFailed()
