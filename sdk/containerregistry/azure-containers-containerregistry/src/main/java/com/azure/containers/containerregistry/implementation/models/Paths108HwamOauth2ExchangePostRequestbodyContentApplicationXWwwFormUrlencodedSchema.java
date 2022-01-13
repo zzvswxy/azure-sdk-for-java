@@ -11,11 +11,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Fluent
 public final class Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema {
     /*
-     * Can take a value of access_token_refresh_token, or access_token, or
-     * refresh_token
+     * Can take a value of access_token
      */
     @JsonProperty(value = "grant_type", required = true)
-    private PostContentSchemaGrantType grantType;
+    private String grantType = "access_token";
 
     /*
      * Indicates the name of your Azure container registry.
@@ -24,42 +23,36 @@ public final class Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXW
     private String service;
 
     /*
-     * AAD tenant associated to the AAD credentials.
-     */
-    @JsonProperty(value = "tenant")
-    private String tenant;
-
-    /*
-     * AAD refresh token, mandatory when grant_type is
-     * access_token_refresh_token or refresh_token
-     */
-    @JsonProperty(value = "refresh_token")
-    private String refreshToken;
-
-    /*
      * AAD access token, mandatory when grant_type is
      * access_token_refresh_token or access_token.
      */
-    @JsonProperty(value = "access_token")
+    @JsonProperty(value = "access_token", required = true)
     private String aadAccessToken;
 
     /**
-     * Get the grantType property: Can take a value of access_token_refresh_token, or access_token, or refresh_token.
+     * Creates an instance of Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema class.
+     */
+    public Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema() {
+        grantType = "access_token";
+    }
+
+    /**
+     * Get the grantType property: Can take a value of access_token.
      *
      * @return the grantType value.
      */
-    public PostContentSchemaGrantType getGrantType() {
+    public String getGrantType() {
         return this.grantType;
     }
 
     /**
-     * Set the grantType property: Can take a value of access_token_refresh_token, or access_token, or refresh_token.
+     * Set the grantType property: Can take a value of access_token.
      *
      * @param grantType the grantType value to set.
      * @return the Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema object itself.
      */
     public Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema setGrantType(
-            PostContentSchemaGrantType grantType) {
+            String grantType) {
         this.grantType = grantType;
         return this;
     }
@@ -82,50 +75,6 @@ public final class Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXW
     public Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema setService(
             String service) {
         this.service = service;
-        return this;
-    }
-
-    /**
-     * Get the tenant property: AAD tenant associated to the AAD credentials.
-     *
-     * @return the tenant value.
-     */
-    public String getTenant() {
-        return this.tenant;
-    }
-
-    /**
-     * Set the tenant property: AAD tenant associated to the AAD credentials.
-     *
-     * @param tenant the tenant value to set.
-     * @return the Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema object itself.
-     */
-    public Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema setTenant(
-            String tenant) {
-        this.tenant = tenant;
-        return this;
-    }
-
-    /**
-     * Get the refreshToken property: AAD refresh token, mandatory when grant_type is access_token_refresh_token or
-     * refresh_token.
-     *
-     * @return the refreshToken value.
-     */
-    public String getRefreshToken() {
-        return this.refreshToken;
-    }
-
-    /**
-     * Set the refreshToken property: AAD refresh token, mandatory when grant_type is access_token_refresh_token or
-     * refresh_token.
-     *
-     * @param refreshToken the refreshToken value to set.
-     * @return the Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema object itself.
-     */
-    public Paths108HwamOauth2ExchangePostRequestbodyContentApplicationXWwwFormUrlencodedSchema setRefreshToken(
-            String refreshToken) {
-        this.refreshToken = refreshToken;
         return this;
     }
 

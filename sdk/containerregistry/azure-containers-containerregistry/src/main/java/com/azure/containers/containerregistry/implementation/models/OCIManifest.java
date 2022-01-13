@@ -10,7 +10,7 @@ import java.util.List;
 
 /** Returns the requested OCI Manifest file. */
 @Fluent
-public final class OCIManifest extends Manifest {
+public final class OCIManifest {
     /*
      * V2 image config descriptor
      */
@@ -28,6 +28,12 @@ public final class OCIManifest extends Manifest {
      */
     @JsonProperty(value = "annotations")
     private Annotations annotations;
+
+    /*
+     * Schema version
+     */
+    @JsonProperty(value = "schemaVersion")
+    private Integer schemaVersion;
 
     /**
      * Get the config property: V2 image config descriptor.
@@ -86,6 +92,26 @@ public final class OCIManifest extends Manifest {
      */
     public OCIManifest setAnnotations(Annotations annotations) {
         this.annotations = annotations;
+        return this;
+    }
+
+    /**
+     * Get the schemaVersion property: Schema version.
+     *
+     * @return the schemaVersion value.
+     */
+    public Integer getSchemaVersion() {
+        return this.schemaVersion;
+    }
+
+    /**
+     * Set the schemaVersion property: Schema version.
+     *
+     * @param schemaVersion the schemaVersion value to set.
+     * @return the OCIManifest object itself.
+     */
+    public OCIManifest setSchemaVersion(Integer schemaVersion) {
+        this.schemaVersion = schemaVersion;
         return this;
     }
 }

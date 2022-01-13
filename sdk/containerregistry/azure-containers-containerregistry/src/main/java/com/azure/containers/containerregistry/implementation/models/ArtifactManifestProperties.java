@@ -104,6 +104,18 @@ public class ArtifactManifestProperties {
     @JsonProperty(value = "manifest.changeableAttributes.readEnabled")
     private Boolean readEnabled;
 
+    /*
+     * Quarantine state
+     */
+    @JsonProperty(value = "manifest.changeableAttributes.quarantineState")
+    private String quarantineState;
+
+    /*
+     * Quarantine details
+     */
+    @JsonProperty(value = "manifest.changeableAttributes.quarantineDetails")
+    private String quarantineDetails;
+
     /**
      * Get the registryLoginServer property: Registry login server name. This is likely to be similar to
      * {registry-name}.azurecr.io.
@@ -273,6 +285,46 @@ public class ArtifactManifestProperties {
      */
     public ArtifactManifestProperties setReadEnabled(Boolean readEnabled) {
         this.readEnabled = readEnabled;
+        return this;
+    }
+
+    /**
+     * Get the quarantineState property: Quarantine state.
+     *
+     * @return the quarantineState value.
+     */
+    public String getQuarantineState() {
+        return this.quarantineState;
+    }
+
+    /**
+     * Set the quarantineState property: Quarantine state.
+     *
+     * @param quarantineState the quarantineState value to set.
+     * @return the ArtifactManifestProperties object itself.
+     */
+    public ArtifactManifestProperties setQuarantineState(String quarantineState) {
+        this.quarantineState = quarantineState;
+        return this;
+    }
+
+    /**
+     * Get the quarantineDetails property: Quarantine details.
+     *
+     * @return the quarantineDetails value.
+     */
+    public String getQuarantineDetails() {
+        return this.quarantineDetails;
+    }
+
+    /**
+     * Set the quarantineDetails property: Quarantine details.
+     *
+     * @param quarantineDetails the quarantineDetails value to set.
+     * @return the ArtifactManifestProperties object itself.
+     */
+    public ArtifactManifestProperties setQuarantineDetails(String quarantineDetails) {
+        this.quarantineDetails = quarantineDetails;
         return this;
     }
 }

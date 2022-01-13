@@ -91,6 +91,18 @@ public class ManifestAttributesBase {
     @JsonProperty(value = "changeableAttributes.readEnabled")
     private Boolean readEnabled;
 
+    /*
+     * Quarantine state
+     */
+    @JsonProperty(value = "changeableAttributes.quarantineState")
+    private String quarantineState;
+
+    /*
+     * Quarantine details
+     */
+    @JsonProperty(value = "changeableAttributes.quarantineDetails")
+    private String quarantineDetails;
+
     /**
      * Get the digest property: Manifest.
      *
@@ -241,6 +253,46 @@ public class ManifestAttributesBase {
      */
     public ManifestAttributesBase setReadEnabled(Boolean readEnabled) {
         this.readEnabled = readEnabled;
+        return this;
+    }
+
+    /**
+     * Get the quarantineState property: Quarantine state.
+     *
+     * @return the quarantineState value.
+     */
+    public String getQuarantineState() {
+        return this.quarantineState;
+    }
+
+    /**
+     * Set the quarantineState property: Quarantine state.
+     *
+     * @param quarantineState the quarantineState value to set.
+     * @return the ManifestAttributesBase object itself.
+     */
+    public ManifestAttributesBase setQuarantineState(String quarantineState) {
+        this.quarantineState = quarantineState;
+        return this;
+    }
+
+    /**
+     * Get the quarantineDetails property: Quarantine details.
+     *
+     * @return the quarantineDetails value.
+     */
+    public String getQuarantineDetails() {
+        return this.quarantineDetails;
+    }
+
+    /**
+     * Set the quarantineDetails property: Quarantine details.
+     *
+     * @param quarantineDetails the quarantineDetails value to set.
+     * @return the ManifestAttributesBase object itself.
+     */
+    public ManifestAttributesBase setQuarantineDetails(String quarantineDetails) {
+        this.quarantineDetails = quarantineDetails;
         return this;
     }
 }

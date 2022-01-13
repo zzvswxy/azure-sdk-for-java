@@ -18,6 +18,12 @@ public final class ManifestAttributesManifest {
     @JsonProperty(value = "references")
     private List<ArtifactManifestPlatform> references;
 
+    /*
+     * Quarantine tag name
+     */
+    @JsonProperty(value = "quarantineTag")
+    private String quarantineTag;
+
     /**
      * Get the references property: List of manifest attributes details.
      *
@@ -35,6 +41,26 @@ public final class ManifestAttributesManifest {
      */
     public ManifestAttributesManifest setReferences(List<ArtifactManifestPlatform> references) {
         this.references = references;
+        return this;
+    }
+
+    /**
+     * Get the quarantineTag property: Quarantine tag name.
+     *
+     * @return the quarantineTag value.
+     */
+    public String getQuarantineTag() {
+        return this.quarantineTag;
+    }
+
+    /**
+     * Set the quarantineTag property: Quarantine tag name.
+     *
+     * @param quarantineTag the quarantineTag value to set.
+     * @return the ManifestAttributesManifest object itself.
+     */
+    public ManifestAttributesManifest setQuarantineTag(String quarantineTag) {
+        this.quarantineTag = quarantineTag;
         return this;
     }
 }

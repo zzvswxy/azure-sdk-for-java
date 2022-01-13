@@ -100,7 +100,7 @@ public final class RegistryArtifactAsync {
         AzureContainerRegistryImpl registryImpl = new AzureContainerRegistryImplBuilder()
             .pipeline(httpPipeline)
             .url(endpoint)
-            .apiVersion(version)
+            //.apiVersion(version)
             .buildClient();
 
         this.endpoint = endpoint;

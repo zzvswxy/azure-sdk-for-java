@@ -26,18 +26,6 @@ public final class AzureContainerRegistryImpl {
         return this.url;
     }
 
-    /** Api Version. */
-    private final String apiVersion;
-
-    /**
-     * Gets Api Version.
-     *
-     * @return the apiVersion value.
-     */
-    public String getApiVersion() {
-        return this.apiVersion;
-    }
-
     /** The HTTP pipeline to send requests through. */
     private final HttpPipeline httpPipeline;
 
@@ -102,16 +90,14 @@ public final class AzureContainerRegistryImpl {
      * Initializes an instance of AzureContainerRegistry client.
      *
      * @param url Registry login URL.
-     * @param apiVersion Api Version.
      */
-    AzureContainerRegistryImpl(String url, String apiVersion) {
+    AzureContainerRegistryImpl(String url) {
         this(
                 new HttpPipelineBuilder()
                         .policies(new UserAgentPolicy(), new RetryPolicy(), new CookiePolicy())
                         .build(),
                 JacksonAdapter.createDefaultSerializerAdapter(),
-                url,
-                apiVersion);
+                url);
     }
 
     /**
@@ -119,10 +105,9 @@ public final class AzureContainerRegistryImpl {
      *
      * @param httpPipeline The HTTP pipeline to send requests through.
      * @param url Registry login URL.
-     * @param apiVersion Api Version.
      */
-    AzureContainerRegistryImpl(HttpPipeline httpPipeline, String url, String apiVersion) {
-        this(httpPipeline, JacksonAdapter.createDefaultSerializerAdapter(), url, apiVersion);
+    AzureContainerRegistryImpl(HttpPipeline httpPipeline, String url) {
+        this(httpPipeline, JacksonAdapter.createDefaultSerializerAdapter(), url);
     }
 
     /**
@@ -131,14 +116,11 @@ public final class AzureContainerRegistryImpl {
      * @param httpPipeline The HTTP pipeline to send requests through.
      * @param serializerAdapter The serializer to serialize an object into a string.
      * @param url Registry login URL.
-     * @param apiVersion Api Version.
      */
-    AzureContainerRegistryImpl(
-            HttpPipeline httpPipeline, SerializerAdapter serializerAdapter, String url, String apiVersion) {
+    AzureContainerRegistryImpl(HttpPipeline httpPipeline, SerializerAdapter serializerAdapter, String url) {
         this.httpPipeline = httpPipeline;
         this.serializerAdapter = serializerAdapter;
         this.url = url;
-        this.apiVersion = apiVersion;
         this.containerRegistries = new ContainerRegistriesImpl(this);
         this.containerRegistryBlobs = new ContainerRegistryBlobsImpl(this);
         this.authentications = new AuthenticationsImpl(this);

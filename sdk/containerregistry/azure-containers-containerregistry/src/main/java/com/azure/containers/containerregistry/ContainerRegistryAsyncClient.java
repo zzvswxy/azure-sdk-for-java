@@ -78,7 +78,7 @@ public final class ContainerRegistryAsyncClient {
         this.registryImplClient = new AzureContainerRegistryImplBuilder()
             .url(endpoint)
             .pipeline(httpPipeline)
-            .apiVersion(version)
+            //.apiVersion(version)
             .buildClient();
         this.registriesImplClient = this.registryImplClient.getContainerRegistries();
         this.apiVersion = version;

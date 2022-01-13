@@ -38,7 +38,7 @@ public class TokenServiceImpl {
             apiVersion = ContainerRegistryServiceVersion.getLatest();
         }
 
-        this.authenticationsImpl = new AuthenticationsImpl(url, apiVersion.getVersion(), pipeline, serializerAdapter);
+        this.authenticationsImpl = new AuthenticationsImpl(url, pipeline, serializerAdapter);
     }
 
     /**

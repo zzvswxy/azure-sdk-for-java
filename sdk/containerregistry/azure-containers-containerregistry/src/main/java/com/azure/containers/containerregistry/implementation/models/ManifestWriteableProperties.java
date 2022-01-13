@@ -34,6 +34,18 @@ public final class ManifestWriteableProperties {
     @JsonProperty(value = "readEnabled")
     private Boolean readEnabled;
 
+    /*
+     * Quarantine state
+     */
+    @JsonProperty(value = "quarantineState")
+    private String quarantineState;
+
+    /*
+     * Quarantine details
+     */
+    @JsonProperty(value = "quarantineDetails")
+    private String quarantineDetails;
+
     /**
      * Get the deleteEnabled property: Delete enabled.
      *
@@ -111,6 +123,46 @@ public final class ManifestWriteableProperties {
      */
     public ManifestWriteableProperties setReadEnabled(Boolean readEnabled) {
         this.readEnabled = readEnabled;
+        return this;
+    }
+
+    /**
+     * Get the quarantineState property: Quarantine state.
+     *
+     * @return the quarantineState value.
+     */
+    public String getQuarantineState() {
+        return this.quarantineState;
+    }
+
+    /**
+     * Set the quarantineState property: Quarantine state.
+     *
+     * @param quarantineState the quarantineState value to set.
+     * @return the ManifestWriteableProperties object itself.
+     */
+    public ManifestWriteableProperties setQuarantineState(String quarantineState) {
+        this.quarantineState = quarantineState;
+        return this;
+    }
+
+    /**
+     * Get the quarantineDetails property: Quarantine details.
+     *
+     * @return the quarantineDetails value.
+     */
+    public String getQuarantineDetails() {
+        return this.quarantineDetails;
+    }
+
+    /**
+     * Set the quarantineDetails property: Quarantine details.
+     *
+     * @param quarantineDetails the quarantineDetails value to set.
+     * @return the ManifestWriteableProperties object itself.
+     */
+    public ManifestWriteableProperties setQuarantineDetails(String quarantineDetails) {
+        this.quarantineDetails = quarantineDetails;
         return this;
     }
 }

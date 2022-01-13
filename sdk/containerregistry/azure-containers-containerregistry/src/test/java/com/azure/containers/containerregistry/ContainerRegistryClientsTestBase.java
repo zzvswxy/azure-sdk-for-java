@@ -12,6 +12,8 @@ import com.azure.containers.containerregistry.models.ContainerRegistryAudience;
 import com.azure.containers.containerregistry.models.ContainerRepositoryProperties;
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.http.HttpClient;
+import com.azure.core.http.ProxyOptions;
+import com.azure.core.http.netty.NettyAsyncHttpClientBuilder;
 import com.azure.core.http.policy.HttpLogDetailLevel;
 import com.azure.core.http.policy.HttpLogOptions;
 import com.azure.core.http.rest.PagedResponse;
@@ -19,6 +21,7 @@ import com.azure.core.http.rest.Response;
 import com.azure.core.test.TestBase;
 import com.azure.core.util.CoreUtils;
 
+import java.net.InetSocketAddress;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,7 +108,7 @@ public class ContainerRegistryClientsTestBase extends TestBase {
             .credential(credential)
             .audience(audience);
 
-            // builder.httpClient(new NettyAsyncHttpClientBuilder().proxy(new ProxyOptions(ProxyOptions.Type.HTTP, new InetSocketAddress("localhost", 8888))).build());
+             // builder.httpClient(new NettyAsyncHttpClientBuilder().proxy(new ProxyOptions(ProxyOptions.Type.HTTP, new InetSocketAddress("localhost", 8888))).build());
         return builder;
     }
 
