@@ -24,9 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ *
+ */
 @ServiceClientBuilder(
     serviceClients = {
         ContainerRegistryBlobAsyncClient.class,
+        ContainerRegistryBlobClient.class
     })
 public final class ContainerRegistryBlobClientBuilder {
     private final ClientLogger logger = new ClientLogger(ContainerRegistryBlobClientBuilder.class);
@@ -69,8 +73,8 @@ public final class ContainerRegistryBlobClientBuilder {
      * @return The updated {@link ContainerRegistryBlobClientBuilder} object.
      */
     public ContainerRegistryBlobClientBuilder repository(String repositoryName) {
-     this.repositoryName = repositoryName;
-     return this;
+        this.repositoryName = repositoryName;
+        return this;
     }
 
     /**

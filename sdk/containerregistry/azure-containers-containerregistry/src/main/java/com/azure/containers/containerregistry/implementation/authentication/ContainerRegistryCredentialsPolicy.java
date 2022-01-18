@@ -10,6 +10,7 @@ import com.azure.core.http.policy.BearerTokenAuthenticationPolicy;
 import com.azure.core.util.logging.ClientLogger;
 import reactor.core.publisher.Mono;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -43,6 +44,7 @@ public final class ContainerRegistryCredentialsPolicy extends BearerTokenAuthent
     public static final String SCOPES_PARAMETER = "scope";
     public static final String SERVICE_PARAMETER = "service";
     public static final String AUTHORIZATION = "Authorization";
+    private static final ByteBuffer VALIDATION_BUFFER = ByteBuffer.allocate(0);
 
     private final ContainerRegistryTokenService tokenService;
     private final ClientLogger logger = new ClientLogger(ContainerRegistryCredentialsPolicy.class);

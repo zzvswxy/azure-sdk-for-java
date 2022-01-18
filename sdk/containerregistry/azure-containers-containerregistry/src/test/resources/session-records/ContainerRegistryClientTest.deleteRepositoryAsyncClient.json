@@ -3,21 +3,21 @@
     "Method" : "POST",
     "Uri" : "https://REDACTED.azurecr.io/oauth2/exchange",
     "Headers" : {
-      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.0.0 (11.0.10; Windows 10; 10.0)",
-      "x-ms-client-request-id" : "47c50e2d-b2e8-49f0-a0d0-f532affc1e5a",
+      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.1.0-beta.1 (11.0.10; Windows 10; 10.0)",
+      "x-ms-client-request-id" : "c11cdabd-9a2a-4acb-b70f-841079dacbd2",
       "Content-Type" : "application/x-www-form-urlencoded"
     },
     "Response" : {
       "Transfer-Encoding" : "chunked",
-      "X-Ms-Correlation-Request-Id" : "9fdc10d1-ca51-41ea-9c82-0041dd0c1963",
+      "X-Ms-Correlation-Request-Id" : "7e473a9e-149e-4642-9bdc-d8d9d1268339",
       "Strict-Transport-Security" : "max-age=31536000; includeSubDomains",
       "Server" : "openresty",
       "Connection" : "keep-alive",
-      "x-ms-ratelimit-remaining-calls-per-second" : "162.7",
+      "x-ms-ratelimit-remaining-calls-per-second" : "160.566667",
       "retry-after" : "0",
       "StatusCode" : "200",
       "Body" : "{\"refresh_token\":\"REDACTED\"}",
-      "Date" : "Fri, 14 Jan 2022 18:48:18 GMT",
+      "Date" : "Thu, 03 Feb 2022 20:36:09 GMT",
       "Content-Type" : "application/json; charset=utf-8"
     },
     "Exception" : null
@@ -25,21 +25,21 @@
     "Method" : "POST",
     "Uri" : "https://REDACTED.azurecr.io/oauth2/token",
     "Headers" : {
-      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.0.0 (11.0.10; Windows 10; 10.0)",
-      "x-ms-client-request-id" : "e9024352-65c1-4e8b-9bc2-a31f8e6128e3",
+      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.1.0-beta.1 (11.0.10; Windows 10; 10.0)",
+      "x-ms-client-request-id" : "67064863-1f84-4299-8fb5-bc15b9694b45",
       "Content-Type" : "application/x-www-form-urlencoded"
     },
     "Response" : {
       "Transfer-Encoding" : "chunked",
-      "X-Ms-Correlation-Request-Id" : "1723dfb9-8bc3-49da-9109-bca948dd7624",
+      "X-Ms-Correlation-Request-Id" : "42197383-e859-4142-b178-975418cb8aef",
       "Strict-Transport-Security" : "max-age=31536000; includeSubDomains",
       "Server" : "openresty",
       "Connection" : "keep-alive",
-      "x-ms-ratelimit-remaining-calls-per-second" : "162.866667",
+      "x-ms-ratelimit-remaining-calls-per-second" : "161.85",
       "retry-after" : "0",
       "StatusCode" : "200",
       "Body" : "{\"access_token\":\"REDACTED\"}",
-      "Date" : "Fri, 14 Jan 2022 18:48:18 GMT",
+      "Date" : "Thu, 03 Feb 2022 20:36:09 GMT",
       "Content-Type" : "application/json; charset=utf-8"
     },
     "Exception" : null
@@ -47,8 +47,8 @@
     "Method" : "DELETE",
     "Uri" : "https://REDACTED.azurecr.io/acr/v1/library%2Fhello-seattle",
     "Headers" : {
-      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.0.0 (11.0.10; Windows 10; 10.0)",
-      "x-ms-client-request-id" : "7885219b-69e6-4105-90b8-c484d24dd2c0"
+      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.1.0-beta.1 (11.0.10; Windows 10; 10.0)",
+      "x-ms-client-request-id" : "015f9f9e-7c5c-4396-a329-1835f7e539e1"
     },
     "Response" : {
       "content-length" : "936",
@@ -57,13 +57,13 @@
       "Connection" : "keep-alive",
       "retry-after" : "0",
       "StatusCode" : "202",
-      "Date" : "Fri, 14 Jan 2022 18:48:21 GMT",
+      "Date" : "Thu, 03 Feb 2022 20:36:11 GMT",
       "Docker-Distribution-Api-Version" : "registry/2.0",
-      "X-Ms-Correlation-Request-Id" : "4ecee614-6779-4f3a-818f-189cb45a38c0",
+      "X-Ms-Correlation-Request-Id" : "9807a05a-4282-4481-9619-703fa9f669f7",
       "Access-Control-Expose-Headers" : "Docker-Content-Digest,WWW-Authenticate,Link,X-Ms-Correlation-Request-Id",
       "Strict-Transport-Security" : "max-age=31536000; includeSubDomains,max-age=31536000; includeSubDomains",
-      "X-Ms-Client-Request-Id" : "7885219b-69e6-4105-90b8-c484d24dd2c0",
-      "X-Ms-Request-Id" : "b9737f02-b62d-45ac-be1a-9ea9c9b19e6c",
+      "X-Ms-Client-Request-Id" : "015f9f9e-7c5c-4396-a329-1835f7e539e1",
+      "X-Ms-Request-Id" : "f5ff9f58-e8d8-428f-8f3c-3649d04b5eb9",
       "X-Ms-Ratelimit-Remaining-Calls-Per-Second" : "8.000000",
       "Body" : "{\"manifestsDeleted\":[\"sha256:220d888ab6ad0f51269605a7ffc0798f442d33c140ed5051e20eec501bbf2202\",\"sha256:2c542cfa48db891b0d4667b1fd98c78428d0e4d7e59ab483dd027a185cf4dbe0\",\"sha256:5c9ac9b2b91bacbe58641a89cb130d6b1cdb8b040e48a76751335d01ef5d76b7\",\"sha256:6f29a27f990505592eb80fc3032334568562f5f682ee17ef9d6b090bfe387e25\",\"sha256:7a012702999ac3589aeb46d28ab2b9b6b82324d8504b55e5cf4fdc9a9f52558d\",\"sha256:80f072dcbce20f8745fa8ec7594ee1cc5e4c53910df1dc4886b03942f249ba76\",\"sha256:9f16da7cb4e19d8def2ae8343610e985b9c46f33867d4b724ba47a4145952621\",\"sha256:ae574da1bf2b023591ed9c40a086b6768369c511cbc2fad37545dbe3048de81e\",\"sha256:b6ed6e4cc14488cfce68e946d13ae329ccf3e8454b26d106f23e3dff38f0b955\",\"sha256:c22223dc179f142076c071e844254ba21cb2e53a7fbb52ff275865130f11c7c1\",\"sha256:d7f84c1d6f16b1006d6ed62783625113b480ea697664909601f51ef380d55523\",\"sha256:d91c24cf3e56abeb62b887ed721836ba88ed5a543e26d28328e312ab518088f3\"],\"tagsDeleted\":[\"latest\"]}\n",
       "Content-Type" : "application/json; charset=utf-8"
@@ -73,21 +73,21 @@
     "Method" : "POST",
     "Uri" : "https://REDACTED.azurecr.io/oauth2/token",
     "Headers" : {
-      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.0.0 (11.0.10; Windows 10; 10.0)",
-      "x-ms-client-request-id" : "89b2f8bc-4a5a-4eca-bd17-c0d1a56b9584",
+      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.1.0-beta.1 (11.0.10; Windows 10; 10.0)",
+      "x-ms-client-request-id" : "dc3011a4-a018-48c1-bd66-fd8abb63a07e",
       "Content-Type" : "application/x-www-form-urlencoded"
     },
     "Response" : {
       "Transfer-Encoding" : "chunked",
-      "X-Ms-Correlation-Request-Id" : "ace82542-ba7c-4ec8-b848-c2eab5c74177",
+      "X-Ms-Correlation-Request-Id" : "fa6fb44f-7cc0-4d9e-8734-5b4cca13f39b",
       "Strict-Transport-Security" : "max-age=31536000; includeSubDomains",
       "Server" : "openresty",
       "Connection" : "keep-alive",
-      "x-ms-ratelimit-remaining-calls-per-second" : "162.683333",
+      "x-ms-ratelimit-remaining-calls-per-second" : "164.95",
       "retry-after" : "0",
       "StatusCode" : "200",
       "Body" : "{\"access_token\":\"REDACTED\"}",
-      "Date" : "Fri, 14 Jan 2022 18:48:21 GMT",
+      "Date" : "Thu, 03 Feb 2022 20:36:11 GMT",
       "Content-Type" : "application/json; charset=utf-8"
     },
     "Exception" : null
@@ -95,8 +95,8 @@
     "Method" : "DELETE",
     "Uri" : "https://REDACTED.azurecr.io/acr/v1/library%2Fhello-seattle",
     "Headers" : {
-      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.0.0 (11.0.10; Windows 10; 10.0)",
-      "x-ms-client-request-id" : "dfe484a7-41fe-4a69-8e72-9b4f11266053"
+      "User-Agent" : "azsdk-java-azure-containers-containerregistry/1.1.0-beta.1 (11.0.10; Windows 10; 10.0)",
+      "x-ms-client-request-id" : "51d8c9e2-1475-4873-97fb-33bffdaa685f"
     },
     "Response" : {
       "content-length" : "129",
@@ -105,13 +105,13 @@
       "Connection" : "keep-alive",
       "retry-after" : "0",
       "StatusCode" : "404",
-      "Date" : "Fri, 14 Jan 2022 18:48:21 GMT",
+      "Date" : "Thu, 03 Feb 2022 20:36:11 GMT",
       "Docker-Distribution-Api-Version" : "registry/2.0",
-      "X-Ms-Correlation-Request-Id" : "90381586-35dd-443e-81f7-25f014652e8d",
+      "X-Ms-Correlation-Request-Id" : "debf1cac-8a0e-4de3-b07a-c049ea698352",
       "Access-Control-Expose-Headers" : "Docker-Content-Digest,WWW-Authenticate,Link,X-Ms-Correlation-Request-Id",
       "Strict-Transport-Security" : "max-age=31536000; includeSubDomains,max-age=31536000; includeSubDomains",
-      "X-Ms-Client-Request-Id" : "dfe484a7-41fe-4a69-8e72-9b4f11266053",
-      "X-Ms-Request-Id" : "8fa1a3a4-860a-4a04-8e8a-67d78122b7fe",
+      "X-Ms-Client-Request-Id" : "51d8c9e2-1475-4873-97fb-33bffdaa685f",
+      "X-Ms-Request-Id" : "2d3b56b2-3960-43a7-a0fd-17477453f4e4",
       "X-Ms-Ratelimit-Remaining-Calls-Per-Second" : "8.000000",
       "Body" : "{\"errors\":[{\"code\":\"NAME_UNKNOWN\",\"message\":\"repository name not known to registry\",\"detail\":{\"name\":\"library/hello-seattle\"}}]}\n",
       "Content-Type" : "application/json; charset=utf-8"

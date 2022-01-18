@@ -34,9 +34,9 @@ public class TokenServiceImpl {
             serializerAdapter = JacksonAdapter.createDefaultSerializerAdapter();
         }
 
-        if (apiVersion == null) {
-            apiVersion = ContainerRegistryServiceVersion.getLatest();
-        }
+//        if (apiVersion == null) {
+//            apiVersion = ContainerRegistryServiceVersion.getLatest();
+//        }
 
         this.authenticationsImpl = new AuthenticationsImpl(url, pipeline, serializerAdapter);
     }

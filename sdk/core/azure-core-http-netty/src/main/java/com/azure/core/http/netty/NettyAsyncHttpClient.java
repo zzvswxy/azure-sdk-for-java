@@ -154,7 +154,7 @@ class NettyAsyncHttpClient implements HttpClient {
                 }
             }
             if (restRequest.getBody() != null) {
-                Flux<ByteBuf> nettyByteBufFlux = restRequest.getBody().map(Unpooled::wrappedBuffer);
+                Flux<ByteBuf> nettyByteBufFlux = restRequest.getBody().flatMap(body -> Flux.just(body.rewind())).map(Unpooled::wrappedBuffer);
                 return reactorNettyOutbound.send(nettyByteBufFlux);
             } else {
                 return reactorNettyOutbound;

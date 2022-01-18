@@ -97,7 +97,7 @@ public final class ContainerRegistriesImpl {
                 @PathParam("name") String name,
                 @PathParam("reference") String reference,
                 @HeaderParam("Content-Type") String contentType,
-                @BodyParam("application/vnd.docker.distribution.manifest.v2+json") Flux<ByteBuffer> payload,
+                @BodyParam("application/octet-stream") Flux<ByteBuffer> payload,
                 @HeaderParam("Content-Length") long contentLength,
                 @HeaderParam("Accept") String accept,
                 Context context);

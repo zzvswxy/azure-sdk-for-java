@@ -41,7 +41,7 @@ sync-methods: none
 context-client-method-parameter: true
 service-interface-as-public: true
 models-subpackage: implementation.models
-custom-types: ArtifactTagOrder,ArtifactManifestOrder,ArtifactArchitecture,ArtifactOperatingSystem,ArtifactManifestPlatform,RepositoryProperties,ContainerRepositoryProperties
+custom-types: ArtifactTagOrder,ArtifactManifestOrder,ArtifactArchitecture,ArtifactOperatingSystem,ArtifactManifestPlatform,RepositoryProperties,ContainerRepositoryProperties,OciManifest,OciBlobDescriptor,OciAnnotations
 custom-types-subpackage: models
 ```
 
@@ -148,6 +148,7 @@ directive:
   from: swagger-document
   where: $.definitions.OCIManifest
   transform: >
+    $["x-ms-client-name"] = "OciManifest";
     $["x-csharp-usage"] = "model,input,output,converter";
     $["x-csharp-formats"] = "json";
     delete $["x-accessibility"];
@@ -176,6 +177,7 @@ directive:
   from: swagger-document
   where: $.definitions.Descriptor
   transform: >
+    $["x-ms-client-name"] = "OciBlobDescriptor";
     delete $["x-accessibility"]
 ```
 
@@ -185,6 +187,7 @@ directive:
   from: swagger-document
   where: $.definitions.Annotations
   transform: >
+    $["x-ms-client-name"] = "OciAnnotations";
     delete $["x-accessibility"]
 ```
 

@@ -6,6 +6,7 @@ package com.azure.containers.containerregistry;
 import com.azure.containers.containerregistry.implementation.ContainerRegistriesImpl;
 import com.azure.containers.containerregistry.implementation.AzureContainerRegistryImpl;
 import com.azure.containers.containerregistry.implementation.AzureContainerRegistryImplBuilder;
+import com.azure.containers.containerregistry.implementation.UtilsImpl;
 import com.azure.core.annotation.ReturnType;
 import com.azure.core.annotation.ServiceClient;
 import com.azure.core.annotation.ServiceMethod;
@@ -129,7 +130,7 @@ public final class ContainerRegistryAsyncClient {
 
             Mono<PagedResponse<String>> pagedResponseMono = this.registriesImplClient.getRepositoriesSinglePageAsync(null, pageSize, context.addData(AZ_TRACING_NAMESPACE_KEY, CONTAINER_REGISTRY_TRACING_NAMESPACE_VALUE))
                 .map(res -> Utils.getPagedResponseWithContinuationToken(res))
-                .onErrorMap(Utils::mapException);
+                .onErrorMap(UtilsImpl::mapException);
             return pagedResponseMono;
 
         } catch (RuntimeException e) {
@@ -183,8 +184,8 @@ public final class ContainerRegistryAsyncClient {
             }
 
             return this.registriesImplClient.deleteRepositoryWithResponseAsync(repositoryName, context.addData(AZ_TRACING_NAMESPACE_KEY, CONTAINER_REGISTRY_TRACING_NAMESPACE_VALUE))
-                .flatMap(Utils::deleteResponseToSuccess)
-                .onErrorMap(Utils::mapException);
+                .flatMap(UtilsImpl::deleteResponseToSuccess)
+                .onErrorMap(UtilsImpl::mapException);
         } catch (RuntimeException e) {
             return monoError(logger, e);
         }
