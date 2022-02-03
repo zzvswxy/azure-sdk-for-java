@@ -163,25 +163,23 @@ public final class UtilsImpl {
             md.update(buffer);
             byte[] digest = md.digest();
             return "sha256:" + byteArrayToHex(digest);
+
         } catch (NoSuchAlgorithmException e) {
-            // TODO: Should I log this error? or rather just move on and let the method fail.
-        } finally {
+        }
+        finally {
             buffer.position(startPosition);
         }
 
         return null;
     }
 
-    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
-    static String byteArrayToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for (int byteIndex = 0; byteIndex < bytes.length; byteIndex++) {
-            int bits = bytes[byteIndex] & 0xFF;
-            hexChars[byteIndex * 2] = HEX_ARRAY[bits >>> 4];
-            hexChars[byteIndex * 2 + 1] = HEX_ARRAY[bits & 0x0F];
+    // TODO: Make this performant. We do not need String.format here and can potentially do simple bit manipulation.
+    public static String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for (byte b: a) {
+            sb.append(String.format("%02x", b));
         }
-
-        return new String(hexChars);
+        return sb.toString();
     }
 
     /**

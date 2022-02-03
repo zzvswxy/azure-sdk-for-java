@@ -8,6 +8,8 @@ import com.azure.containers.containerregistry.models.OciManifest;
 import com.azure.containers.containerregistry.specialized.ContainerRegistryBlobAsyncClient;
 import com.azure.core.http.HttpClient;
 import com.azure.core.util.BinaryData;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import reactor.core.publisher.Mono;
@@ -62,6 +64,7 @@ public class ContainerRegistryBlobClientIntegerationTests extends ContainerRegis
 
     @ParameterizedTest(name = DISPLAY_NAME_WITH_ARGUMENTS)
     @MethodSource("getHttpClients")
+    @EnabledOnOs(value = {OS.WINDOWS}, disabledReason = "OCI manifest are OS specific. Will need another test for Linux and Mac.")
     public void uploadManifest(HttpClient httpClient) {
         asyncClient = getBlobClientAsync("oci-artifact", httpClient);
         uploadManifestPrerequisites();
