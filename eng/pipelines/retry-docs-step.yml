@@ -70,5 +70,5 @@ stages:
           TestPipeline: true
         ArtifactName: packages
         TargetDocRepoName: ${{ parameters.TargetDocRepoName }}
-        EnableSigningStage: true
+        EnableSigningStage: false
         EnableAllDependsOn: false
