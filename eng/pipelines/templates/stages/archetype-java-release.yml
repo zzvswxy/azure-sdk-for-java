@@ -349,6 +349,8 @@ stages:
 
   - ${{if ne(parameters.EnableIntegrationStage, false)}}:
     - stage: Integration 
+      ${{ if ne(parameters.EnableAllDependsOn, false) }}:
+        dependsOn: Signing 
       jobs:
       - job: PublishPackages
         condition: or(eq(variables['SetDevVersion'], 'true'), and(eq(variables['Build.Reason'],'Schedule'), eq(variables['System.TeamProject'], 'internal')))
