@@ -20,41 +20,47 @@ parameters:
   - name: EnableIntegrationStage
     type: boolean
     default: true
-
+  - name: EnableSigningStage
+    type: boolean
+    default: true
+  - name: EnableAllDependsOn
+    type: boolean
+    default: true
 stages:
   # The signing stage is responsible for submitting binaries to ESRP for our official signing
   # where appropriate and also meeting any other signing requirements for particular artifacts,
   # in this case we do GPG signing in order to publish to Maven Central. At the moment signing
   # is protected by an approval check but this may be removed in the future.
-  - stage: Signing
-    dependsOn: ${{parameters.DependsOn}}
-    jobs:
-      - deployment: SignPackage
-        environment: esrp
-        timeoutInMinutes: 20
-        variables:
-          - template: ../variables/globals.yml
-        pool:
-          name: azsdk-pool-mms-ubuntu-2004-general
-          vmImage: MMSUbuntu20.04
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: none
+  - ${{ if ne(parameters.EnableSigningStage, false) }}:
+    - stage: Signing
+      dependsOn: ${{parameters.DependsOn}}
+      jobs:
+        - deployment: SignPackage
+          environment: esrp
+          timeoutInMinutes: 20
+          variables:
+            - template: ../variables/globals.yml
+          pool:
+            name: azsdk-pool-mms-ubuntu-2004-general
+            vmImage: MMSUbuntu20.04
+          strategy:
+            runOnce:
+              deploy:
+                steps:
+                  - checkout: none
 
-                - download: current
-                  displayName: 'Download Artifact: ${{parameters.ArtifactName}}'
-                  artifact: ${{parameters.ArtifactName}}
+                  - download: current
+                    displayName: 'Download Artifact: ${{parameters.ArtifactName}}'
+                    artifact: ${{parameters.ArtifactName}}
 
-                - template: tools/java-esrp-signing/java-esrp-signing.yml@azure-sdk-build-tools
-                  parameters:
-                    Artifacts: ${{parameters.Artifacts}}
-                    ArtifactDirectory: $(Pipeline.Workspace)/${{parameters.ArtifactName}}
+                  - template: tools/java-esrp-signing/java-esrp-signing.yml@azure-sdk-build-tools
+                    parameters:
+                      Artifacts: ${{parameters.Artifacts}}
+                      ArtifactDirectory: $(Pipeline.Workspace)/${{parameters.ArtifactName}}
 
-                - publish: $(Pipeline.Workspace)/${{parameters.ArtifactName}}
-                  artifact: ${{parameters.ArtifactName}}-signed
-                  displayName: 'Store signed packages in ${{parameters.ArtifactName}}-signed artifact'
+                  - publish: $(Pipeline.Workspace)/${{parameters.ArtifactName}}
+                    artifact: ${{parameters.ArtifactName}}-signed
+                    displayName: 'Store signed packages in ${{parameters.ArtifactName}}-signed artifact'
 
   # We generate two interdependent stages for each artifact listed in the ci.yml file, creates the release
   # in GitHub. The Release stage publishes to Maven Central. Both stages require approval since they
@@ -65,7 +71,8 @@ stages:
     - ${{ each artifact in parameters.Artifacts }}:
       - stage:
         displayName: 'Release: ${{artifact.name}}'
-        dependsOn: Signing
+        ${{ if ne(parameters.EnableAllDependsOn, false) }}:
+          dependsOn: Signing
         condition: and(succeeded(), ne(variables['SetDevVersion'], 'true'), ne(variables['Skip.Release'], 'true'), ne(variables['Build.Repository.Name'], 'Azure/azure-sdk-for-java-pr'))
         jobs:
           - job: VerifyReleaseVersion
@@ -122,7 +129,8 @@ stages:
             displayName: "Create release tag"
             condition: and(succeeded(), ne(variables['Skip.TagRepository'], 'true'))
             environment: github
-            dependsOn: VerifyReleaseVersion
+            ${{ if ne(parameters.EnableAllDependsOn, false) }}:
+              dependsOn: VerifyReleaseVersion
             variables:
               - template: ../variables/globals.yml
             pool:
@@ -149,7 +157,8 @@ stages:
               displayName: "Publish to Maven Central"
               condition: and(succeeded(), ne(variables['Skip.PublishPackage'], 'true'))
               environment: maven
-              dependsOn: TagRepository
+              ${{ if ne(parameters.EnableAllDependsOn, false) }}:
+                dependsOn: TagRepository
               variables:
                 - template: ../variables/globals.yml
               pool:
@@ -207,7 +216,8 @@ stages:
               displayName: Docs.MS Release
               condition: and(succeeded(), ne(variables['Skip.PublishDocs'], 'true'))
               environment: githubio
-              dependsOn: PublishPackage
+              ${{ if ne(parameters.EnableAllDependsOn, false) }}:
+                dependsOn: PublishPackage
 
               pool:
                 name: azsdk-pool-mms-ubuntu-2004-general
@@ -258,7 +268,8 @@ stages:
               displayName: Publish Docs to GitHubIO Blob Storage
               condition: and(succeeded(), ne(variables['Skip.PublishDocs'], 'true'))
               environment: githubio
-              dependsOn: PublishPackage
+              ${{ if ne(parameters.EnableAllDependsOn, false) }}:
+                dependsOn: PublishPackage
               variables:
                 - template: ../variables/globals.yml
               pool:
@@ -292,7 +303,8 @@ stages:
               displayName: "Update Package Version"
               condition: and(succeeded(), ne(variables['Skip.UpdatePackageVersion'], 'true'))
               environment: github
-              dependsOn: PublishPackage
+              ${{ if ne(parameters.EnableAllDependsOn, false) }}:
+                dependsOn: PublishPackage
               variables:
                 - template: ../variables/globals.yml
               pool:
@@ -337,6 +349,8 @@ stages:
 
   - ${{if ne(parameters.EnableIntegrationStage, false)}}:
     - stage: Integration
+      ${{ if ne(parameters.EnableAllDependsOn, false) }}:
+        dependsOn: Signing
       dependsOn: Signing
       jobs:
       - job: PublishPackages
