@@ -11,8 +11,8 @@ parameters:
   - name: <packagename>
     groupId: com.azure
     safeName: safename
-    skipVerifyReleaseVersion: true
-    skipTagRepository: true
+    Skip.VersionVerification: true
+    Skip.TagRepository: true
     skipPublishPackage: true
     skipPublishDocMs: true
     skipPublishDocGithubIo: true
