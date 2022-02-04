@@ -231,7 +231,7 @@ stages:
                     steps:
                       - download: current
                         displayName: 'Download Artifact: ${{parameters.ArtifactName}}-signed'
-                        artifact: ${{parameters.ArtifactName}}
+                        artifact: ${{parameters.ArtifactName}}-signed
                       - template: /eng/common/pipelines/templates/steps/sparse-checkout.yml
                         parameters:
                           SkipDefaultCheckout: true
