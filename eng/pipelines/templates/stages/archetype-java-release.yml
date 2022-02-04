@@ -348,11 +348,9 @@ stages:
                           CloseAfterOpenForTesting: '${{ parameters.TestPipeline }}'
 
   - ${{if ne(parameters.EnableIntegrationStage, false)}}:
-    - stage: Integration + ${{parameters.EnableIntegrationStage}}
-      ${{ if ne(parameters.EnableAllDependsOn, false) }}:
-        dependsOn: Signing 
+    - stage: Integration 
       jobs:
-      - job: PublishPackages + ${{parameters.EnableAllDependsOn}}
+      - job: PublishPackages
         condition: or(eq(variables['SetDevVersion'], 'true'), and(eq(variables['Build.Reason'],'Schedule'), eq(variables['System.TeamProject'], 'internal')))
         displayName: Publish package to daily feed
         variables:
