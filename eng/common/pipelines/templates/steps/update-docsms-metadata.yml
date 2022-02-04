@@ -32,9 +32,9 @@ parameters:
   - name: DocValidationImageId
     type: string
     default: ''
-  - name: JavadocJarLocations
-    type: object
-    default: []
+  # - name: JavadocJarLocations
+  #   type: object
+  #   default: []
 steps:
 - template: /eng/common/pipelines/templates/steps/enable-long-path-support.yml
 
@@ -88,10 +88,11 @@ steps:
       ContainerRegistryClientId: $(azuresdkimages-cr-clientid)
       ContainerRegistryClientSecret: $(azuresdkimages-cr-clientsecret)
       ImageId: '${{ parameters.DocValidationImageId }}'
-- pwsh: |
-    foreach ($javadocJar in ${{parameters.JavadocJarLocations}}) {
-      Write-Host "The jar name is $javadocJar."
-    }
+# - pwsh: |
+#     foreach ($javadocJar in ${{parameters.JavadocJarLocations}}) {
+#       Write-Host "The jar name is $javadocJar."
+#     }
+#   displayName: Check jar
 - pwsh: |
     $packageInfoJson = '${{ convertToJson(parameters.PackageInfoLocations) }}'.Trim('"').Replace("\\", "/")
     $packageInfoLocations = ConvertFrom-Json $packageInfoJson
