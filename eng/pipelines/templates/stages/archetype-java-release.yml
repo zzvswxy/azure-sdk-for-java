@@ -348,9 +348,9 @@ stages:
                           CloseAfterOpenForTesting: '${{ parameters.TestPipeline }}'
 
   - ${{if ne(parameters.EnableIntegrationStage, false)}}:
-    - stage: Integration
+    - stage: Integration + "${{parameters.EnableIntegrationStage}}""
       ${{ if ne(parameters.EnableAllDependsOn, false) }}:
-        dependsOn: Signing
+        dependsOn: Signing + "${{parameters.EnableAllDependsOn}}""
       jobs:
       - job: PublishPackages
         condition: or(eq(variables['SetDevVersion'], 'true'), and(eq(variables['Build.Reason'],'Schedule'), eq(variables['System.TeamProject'], 'internal')))
