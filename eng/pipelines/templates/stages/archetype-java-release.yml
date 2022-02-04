@@ -230,7 +230,7 @@ stages:
                   deploy:
                     steps:
                       - download: current
-                        displayName: 'Download Artifact: ${{parameters.ArtifactName}}'
+                        displayName: 'Download Artifact: ${{parameters.ArtifactName}}-signed'
                         artifact: ${{parameters.ArtifactName}}
                       - template: /eng/common/pipelines/templates/steps/sparse-checkout.yml
                         parameters:
