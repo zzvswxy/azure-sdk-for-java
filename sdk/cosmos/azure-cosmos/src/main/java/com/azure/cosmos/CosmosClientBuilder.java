@@ -788,14 +788,12 @@ public class CosmosClientBuilder implements
     //  Connection policy has to be built before it can be used by this builder
     private void buildConnectionPolicy() {
         if (this.directConnectionConfig != null) {
-            this.connectionPolicy = new ConnectionPolicy(directConnectionConfig);
             //  Check if the user passed additional gateway connection configuration
-            if (this.gatewayConnectionConfig != null) {
-                this.connectionPolicy.setMaxConnectionPoolSize(this.gatewayConnectionConfig.getMaxConnectionPoolSize());
-                this.connectionPolicy.setHttpNetworkRequestTimeout(this.gatewayConnectionConfig.getNetworkRequestTimeout());
-                this.connectionPolicy.setIdleHttpConnectionTimeout(this.gatewayConnectionConfig.getIdleConnectionTimeout());
-                this.connectionPolicy.setProxy(this.gatewayConnectionConfig.getProxy());
+            //  If this is null, initialize with default values
+            if (this.gatewayConnectionConfig == null) {
+                this.gatewayConnectionConfig = GatewayConnectionConfig.getDefaultConfig();
             }
+            this.connectionPolicy = new ConnectionPolicy(directConnectionConfig, gatewayConnectionConfig);
         } else if (gatewayConnectionConfig != null) {
             this.connectionPolicy = new ConnectionPolicy(gatewayConnectionConfig);
         }
@@ -862,8 +860,7 @@ public class CosmosClientBuilder implements
     ///////////////////////////////////////////////////////////////////////////////////////////
     // the following helper/accessor only helps to access this class outside of this package.//
     ///////////////////////////////////////////////////////////////////////////////////////////
-
-    static {
+    static void initialize() {
         CosmosClientBuilderHelper.setCosmosClientBuilderAccessor(
             new CosmosClientBuilderHelper.CosmosClientBuilderAccessor() {
 
@@ -904,4 +901,6 @@ public class CosmosClientBuilder implements
                 }
             });
     }
+
+    static { initialize(); }
 }
