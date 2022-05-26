@@ -42,6 +42,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <modules>
+        <module>azure-resourcemanager-agrifood</module>
         <module>azure-verticals-agrifood-farming</module>
       </modules>
     </profile>
