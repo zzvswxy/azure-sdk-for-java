@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 package com.azure.spring.cloud.config.properties;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import com.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties
 public final class AppConfigurationProperties {
 
     /**
-     * Prefix for client configurations for connecting to stores.
+     * Prefix for client configurations for connecting to configuration stores.
      */
     public static final String CONFIG_PREFIX = "spring.cloud.azure.appconfiguration";
 
@@ -55,6 +56,8 @@ public final class AppConfigurationProperties {
     private AppConfigManagedIdentityProperties managedIdentity;
 
     private boolean pushRefresh = true;
+
+    private Duration refreshInterval;
 
     /**
      * @return the enabled
@@ -95,7 +98,7 @@ public final class AppConfigurationProperties {
     }
 
     /**
-     * Overrides the default context of `applicaiton`.
+     * Overrides the default context of `application`.
      * @deprecated Use spring.cloud.azure.appconfiguration[0].selects
      * @param defaultContext Key Prefix.
      */
@@ -118,7 +121,7 @@ public final class AppConfigurationProperties {
     /**
      * Used to override the spring.application.name value
      * @deprecated Use spring.cloud.azure.appconfiguration[0].selects
-     * @param name application name in conifg key.
+     * @param name application name in config key.
      */
     @Deprecated
     public void setName(@Nullable String name) {
@@ -154,6 +157,20 @@ public final class AppConfigurationProperties {
     }
 
     /**
+     * @return the refreshInterval
+     */
+    public Duration getRefreshInterval() {
+        return refreshInterval;
+    }
+
+    /**
+     * @param refreshInterval the refreshInterval to set
+     */
+    public void setRefreshInterval(Duration refreshInterval) {
+        this.refreshInterval = refreshInterval;
+    }
+
+    /**
      * Validates at least one store is configured for use and they are valid.
      */
     @PostConstruct
@@ -169,5 +186,8 @@ public final class AppConfigurationProperties {
 
         int uniqueStoreSize = (int) this.stores.stream().map(ConfigStore::getEndpoint).distinct().count();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
+        if (refreshInterval != null) {
+            Assert.isTrue(refreshInterval.getSeconds() >= 1, "Minimum refresh interval time is 1 Second.");
+        }
     }
 }

@@ -8,11 +8,13 @@ import com.azure.cosmos.implementation.Configs;
 import com.azure.cosmos.implementation.ImplementationBridgeHelpers;
 import com.azure.cosmos.implementation.spark.OperationContextAndListenerTuple;
 import com.azure.cosmos.util.Beta;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * Specifies the options associated with query methods (enumeration operations)
@@ -43,7 +45,7 @@ public class CosmosQueryRequestOptions {
     private boolean queryPlanRetrievalDisallowed;
     private UUID correlationActivityId;
     private boolean emptyPageDiagnosticsEnabled;
-
+    private Function<JsonNode, ?> itemFactoryMethod;
     /**
      * Instantiates a new query request options.
      */
@@ -80,6 +82,7 @@ public class CosmosQueryRequestOptions {
         this.queryPlanRetrievalDisallowed = options.queryPlanRetrievalDisallowed;
         this.correlationActivityId = options.correlationActivityId;
         this.emptyPageDiagnosticsEnabled = options.emptyPageDiagnosticsEnabled;
+        this.itemFactoryMethod = options.itemFactoryMethod;
     }
 
     void setOperationContextAndListenerTuple(OperationContextAndListenerTuple operationContextAndListenerTuple) {
@@ -588,11 +591,18 @@ public class CosmosQueryRequestOptions {
         return this;
     }
 
+    Function<JsonNode, ?> getItemFactoryMethod() { return this.itemFactoryMethod; }
+
+    CosmosQueryRequestOptions setItemFactoryMethod(Function<JsonNode, ?> factoryMethod) {
+        this.itemFactoryMethod = factoryMethod;
+
+        return this;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////
     // the following helper/accessor only helps to access this class outside of this package.//
     ///////////////////////////////////////////////////////////////////////////////////////////
-
-    static {
+    static void initialize() {
         ImplementationBridgeHelpers.CosmosQueryRequestOptionsHelper.setCosmosQueryRequestOptionsAccessor(
             new ImplementationBridgeHelpers.CosmosQueryRequestOptionsHelper.CosmosQueryRequestOptionsAccessor() {
 
@@ -604,6 +614,10 @@ public class CosmosQueryRequestOptions {
 
                 @Override
                 public OperationContextAndListenerTuple getOperationContext(CosmosQueryRequestOptions queryRequestOptions) {
+                    if (queryRequestOptions == null) {
+                        return null;
+                    }
+
                     return queryRequestOptions.getOperationContextAndListenerTuple();
                 }
 
@@ -655,6 +669,24 @@ public class CosmosQueryRequestOptions {
                 public CosmosQueryRequestOptions setEmptyPageDiagnosticsEnabled(CosmosQueryRequestOptions queryRequestOptions, boolean emptyPageDiagnosticsEnabled) {
                     return queryRequestOptions.setEmptyPageDiagnosticsEnabled(emptyPageDiagnosticsEnabled);
                 }
+
+                @Override
+                @SuppressWarnings("unchecked")
+                public <T> Function<JsonNode, T> getItemFactoryMethod(
+                    CosmosQueryRequestOptions queryRequestOptions, Class<T> classOfT) {
+
+                    return (Function<JsonNode, T>)queryRequestOptions.getItemFactoryMethod();
+                }
+
+                @Override
+                public CosmosQueryRequestOptions setItemFactoryMethod(
+                    CosmosQueryRequestOptions queryRequestOptions,
+                    Function<JsonNode, ?> factoryMethod) {
+
+                    return queryRequestOptions.setItemFactoryMethod(factoryMethod);
+                }
             });
     }
+
+    static { initialize(); }
 }
