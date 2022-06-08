@@ -1,6 +1,6 @@
 # Release History
 
-## 2.14.0-beta.1 (Unreleased)
+## 2.16.0-beta.1 (Unreleased)
 
 ### Features Added
 
@@ -9,6 +9,24 @@
 ### Bugs Fixed
 
 ### Other Changes
+
+## 2.15.0 (2022-05-25)
+
+### Breaking Changes
+
+- Removed `DenyAssignmentsClient` as it is preview feature.
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated `api-version` of authentication to `2020-10-01`.
+
+## 2.14.0 (2022-04-11)
+
+### Features Added
+
+- Supported Azure Kubernetes Service related roles to `BuiltInRole`.
 
 ## 2.13.0 (2022-03-11)
 
