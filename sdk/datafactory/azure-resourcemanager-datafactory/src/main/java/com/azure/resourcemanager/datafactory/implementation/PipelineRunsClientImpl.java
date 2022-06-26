@@ -23,7 +23,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.PipelineRunsClient;
 import com.azure.resourcemanager.datafactory.fluent.models.PipelineRunInner;
 import com.azure.resourcemanager.datafactory.fluent.models.PipelineRunsQueryResponseInner;
@@ -32,8 +31,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in PipelineRunsClient. */
 public final class PipelineRunsClientImpl implements PipelineRunsClient {
-    private final ClientLogger logger = new ClientLogger(PipelineRunsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final PipelineRunsService service;
 
@@ -233,14 +230,7 @@ public final class PipelineRunsClientImpl implements PipelineRunsClient {
     private Mono<PipelineRunsQueryResponseInner> queryByFactoryAsync(
         String resourceGroupName, String factoryName, RunFilterParameters filterParameters) {
         return queryByFactoryWithResponseAsync(resourceGroupName, factoryName, filterParameters)
-            .flatMap(
-                (Response<PipelineRunsQueryResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -396,14 +386,7 @@ public final class PipelineRunsClientImpl implements PipelineRunsClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PipelineRunInner> getAsync(String resourceGroupName, String factoryName, String runId) {
         return getWithResponseAsync(resourceGroupName, factoryName, runId)
-            .flatMap(
-                (Response<PipelineRunInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -563,7 +546,7 @@ public final class PipelineRunsClientImpl implements PipelineRunsClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> cancelAsync(String resourceGroupName, String factoryName, String runId, Boolean isRecursive) {
         return cancelWithResponseAsync(resourceGroupName, factoryName, runId, isRecursive)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -581,7 +564,7 @@ public final class PipelineRunsClientImpl implements PipelineRunsClient {
     private Mono<Void> cancelAsync(String resourceGroupName, String factoryName, String runId) {
         final Boolean isRecursive = null;
         return cancelWithResponseAsync(resourceGroupName, factoryName, runId, isRecursive)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**

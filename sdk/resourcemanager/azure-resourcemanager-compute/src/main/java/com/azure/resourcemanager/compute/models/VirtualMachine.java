@@ -1219,7 +1219,7 @@ public interface VirtualMachine
             WithEphemeralOSDisk withEphemeralOSDisk();
         }
 
-        /** The stage of a virtual machine definition allowing to select Ephemeral OS disk placement. */
+        /** The stage of a virtual machine definition allowing to set OS disk to be ephemeral. */
         interface WithEphemeralOSDisk {
             /**
              * Selects where you want to place the Ephemeral OS disk.
@@ -1233,7 +1233,7 @@ public interface VirtualMachine
         interface WithVMSize {
             /**
              * Selects the size of the virtual machine.
-             *
+             * <p>
              * See {@link ComputeSkus#listByRegion(Region)} for virtual machine sizes in region,
              * and {@link AvailabilitySet#listVirtualMachineSizes()} for virtual machine sizes in availability set.
              *
@@ -1244,7 +1244,7 @@ public interface VirtualMachine
 
             /**
              * Specifies the size of the virtual machine.
-             *
+             * <p>
              * {@link VirtualMachineSizeTypes} is not the complete list of virtual machine sizes.
              * See {@link ComputeSkus#listByRegion(Region)} for virtual machine sizes in region,
              * and {@link AvailabilitySet#listVirtualMachineSizes()} for virtual machine sizes in availability set.
@@ -1863,7 +1863,7 @@ public interface VirtualMachine
         interface WithAdditionalCapacities {
             /**
              * Enables hibernation feature.
-             *
+             * <p>
              * Hibernation is supported on premium general purpose SKUs, e.g. STANDARD_D2S_V3.
              * Hibernation is supported on Windows 10 19H1 and higher, and Windows Server 2019 and higher.
              * For Ubuntu 18.04 or higher, hibernation-setup-tool is required to be installed on the virtual machine.
@@ -2369,6 +2369,37 @@ public interface VirtualMachine
              */
             Update disableHibernation();
         }
+
+        /** The stage of the VM update allowing to swap os disk. */
+        interface WithOSDisk {
+            /**
+             * Swaps the OS disk of the virtual machine for the specified managed disk.
+             * <p>Note:</p>
+             * <p>- Both the original OS disk and the disk to swap for have to be managed disks.</p>
+             * <p>- You cannot switch the OS Type of the VM
+             *      (i.e. Swap an OS Disk with Linux for an OS Disk with Windows).</p>
+             * <p>- Make sure that the VM size and storage type are compatible with the disk you want to attach.
+             *      For example, if the disk you want to use is in Premium Storage, then the VM needs to be capable of
+             *      Premium Storage (like a DS-series size).</p>
+             * @param diskId id of the managed disk to swap OS disk for
+             * @return the next stage of the update
+             */
+            Update withOSDisk(String diskId);
+
+            /**
+             * Swaps the OS disk of the virtual machine for the specified managed disk.
+             * <p>Note:</p>
+             * <p>- Both the original OS disk and the disk to swap for have to be managed disks.</p>
+             * <p>- You cannot switch the OS Type of the VM
+             *      (i.e. Swap an OS Disk with Linux for an OS Disk with Windows).</p>
+             * <p>- Make sure that the VM size and storage type are compatible with the disk you want to attach.
+             *      For example, if the disk you want to use is in Premium Storage, then the VM needs to be capable of
+             *      Premium Storage (like a DS-series size).</p>
+             * @param disk the managed disk to swap OS disk for
+             * @return the next stage of the update
+             */
+            Update withOSDisk(Disk disk);
+        }
     }
 
     /** The template for an update operation, containing all the settings that can be modified. */
@@ -2385,7 +2416,8 @@ public interface VirtualMachine
             UpdateStages.WithSystemAssignedManagedServiceIdentity,
             UpdateStages.WithUserAssignedManagedServiceIdentity,
             UpdateStages.WithLicenseType,
-            UpdateStages.WithAdditionalCapacities {
+            UpdateStages.WithAdditionalCapacities,
+            UpdateStages.WithOSDisk {
         /**
          * Specifies the encryption settings for the OS Disk.
          *
@@ -2447,7 +2479,7 @@ public interface VirtualMachine
 
         /**
          * Specifies a new size for the virtual machine.
-         *
+         * <p>
          * See {@link VirtualMachine#availableSizes()} for resizing.
          *
          * @param sizeName the name of a size for the virtual machine as text
@@ -2457,7 +2489,7 @@ public interface VirtualMachine
 
         /**
          * Specifies a new size for the virtual machine.
-         *
+         * <p>
          * {@link VirtualMachineSizeTypes} is not the complete list of virtual machine sizes.
          * See {@link VirtualMachine#availableSizes()} for resizing.
          *

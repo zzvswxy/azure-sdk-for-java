@@ -12,7 +12,7 @@ public interface Locations {
     /**
      * Checks whether the Media Service resource name is available.
      *
-     * @param locationName The name of the location.
+     * @param locationName Location name.
      * @param parameters The request parameters.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
@@ -24,13 +24,13 @@ public interface Locations {
     /**
      * Checks whether the Media Service resource name is available.
      *
-     * @param locationName The name of the location.
+     * @param locationName Location name.
      * @param parameters The request parameters.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response from the check name availability request.
+     * @return the response from the check name availability request along with {@link Response}.
      */
     Response<EntityNameAvailabilityCheckOutput> checkNameAvailabilityWithResponse(
         String locationName, CheckNameAvailabilityInput parameters, Context context);

@@ -200,8 +200,8 @@ public class RequestResponseChannel implements AsyncCloseable {
                 onTerminalState("SendLinkHandler");
             }),
 
-            //TODO (conniey): Do we need this if we already close the request response nodes when the
-            // connection.closeWork is executed? It would be preferred to get rid of this circular dependency.
+            // To ensure graceful closure of request-response-channel instance that won the race between
+            // its creation and its parent connection close.
             amqpConnection.getShutdownSignals().next().flatMap(signal -> {
                 logger.verbose("Shutdown signal received.");
                 return closeAsync();
@@ -218,7 +218,7 @@ public class RequestResponseChannel implements AsyncCloseable {
                 this.receiveLink.open();
             });
         } catch (IOException | RejectedExecutionException e) {
-            throw logger.logExceptionAsError(new RuntimeException("Unable to open send and receive link.", e));
+            throw logger.logExceptionAsWarning(new RuntimeException("Unable to open send and receive link.", e));
         }
     }
 
@@ -403,7 +403,7 @@ public class RequestResponseChannel implements AsyncCloseable {
             return;
         }
 
-        logger.atError()
+        logger.atWarning()
             .log("{} Disposing unconfirmed sends.", message, error);
 
         endpointStates.emitError(error, (signalType, emitResult) -> {

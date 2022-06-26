@@ -22,7 +22,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.TriggerRunsClient;
 import com.azure.resourcemanager.datafactory.fluent.models.TriggerRunsQueryResponseInner;
 import com.azure.resourcemanager.datafactory.models.RunFilterParameters;
@@ -30,8 +29,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in TriggerRunsClient. */
 public final class TriggerRunsClientImpl implements TriggerRunsClient {
-    private final ClientLogger logger = new ClientLogger(TriggerRunsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final TriggerRunsService service;
 
@@ -236,7 +233,7 @@ public final class TriggerRunsClientImpl implements TriggerRunsClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> rerunAsync(String resourceGroupName, String factoryName, String triggerName, String runId) {
         return rerunWithResponseAsync(resourceGroupName, factoryName, triggerName, runId)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -403,7 +400,7 @@ public final class TriggerRunsClientImpl implements TriggerRunsClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> cancelAsync(String resourceGroupName, String factoryName, String triggerName, String runId) {
         return cancelWithResponseAsync(resourceGroupName, factoryName, triggerName, runId)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -566,14 +563,7 @@ public final class TriggerRunsClientImpl implements TriggerRunsClient {
     private Mono<TriggerRunsQueryResponseInner> queryByFactoryAsync(
         String resourceGroupName, String factoryName, RunFilterParameters filterParameters) {
         return queryByFactoryWithResponseAsync(resourceGroupName, factoryName, filterParameters)
-            .flatMap(
-                (Response<TriggerRunsQueryResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

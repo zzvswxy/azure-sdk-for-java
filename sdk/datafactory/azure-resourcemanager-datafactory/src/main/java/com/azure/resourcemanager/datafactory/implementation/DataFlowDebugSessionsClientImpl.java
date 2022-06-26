@@ -28,7 +28,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.datafactory.fluent.DataFlowDebugSessionsClient;
@@ -47,8 +46,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in DataFlowDebugSessionsClient. */
 public final class DataFlowDebugSessionsClientImpl implements DataFlowDebugSessionsClient {
-    private final ClientLogger logger = new ClientLogger(DataFlowDebugSessionsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final DataFlowDebugSessionsService service;
 
@@ -745,14 +742,7 @@ public final class DataFlowDebugSessionsClientImpl implements DataFlowDebugSessi
     private Mono<AddDataFlowToDebugSessionResponseInner> addDataFlowAsync(
         String resourceGroupName, String factoryName, DataFlowDebugPackage request) {
         return addDataFlowWithResponseAsync(resourceGroupName, factoryName, request)
-            .flatMap(
-                (Response<AddDataFlowToDebugSessionResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -912,8 +902,7 @@ public final class DataFlowDebugSessionsClientImpl implements DataFlowDebugSessi
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(
         String resourceGroupName, String factoryName, DeleteDataFlowDebugSessionRequest request) {
-        return deleteWithResponseAsync(resourceGroupName, factoryName, request)
-            .flatMap((Response<Void> res) -> Mono.empty());
+        return deleteWithResponseAsync(resourceGroupName, factoryName, request).flatMap(ignored -> Mono.empty());
     }
 
     /**
