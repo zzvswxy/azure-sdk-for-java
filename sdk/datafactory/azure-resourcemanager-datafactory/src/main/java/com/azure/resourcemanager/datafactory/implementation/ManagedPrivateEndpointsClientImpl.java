@@ -28,7 +28,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.ManagedPrivateEndpointsClient;
 import com.azure.resourcemanager.datafactory.fluent.models.ManagedPrivateEndpointResourceInner;
 import com.azure.resourcemanager.datafactory.models.ManagedPrivateEndpointListResponse;
@@ -36,8 +35,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in ManagedPrivateEndpointsClient. */
 public final class ManagedPrivateEndpointsClientImpl implements ManagedPrivateEndpointsClient {
-    private final ClientLogger logger = new ClientLogger(ManagedPrivateEndpointsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ManagedPrivateEndpointsService service;
 
@@ -545,14 +542,7 @@ public final class ManagedPrivateEndpointsClientImpl implements ManagedPrivateEn
                 managedPrivateEndpointName,
                 managedPrivateEndpoint,
                 ifMatch)
-            .flatMap(
-                (Response<ManagedPrivateEndpointResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -583,14 +573,7 @@ public final class ManagedPrivateEndpointsClientImpl implements ManagedPrivateEn
                 managedPrivateEndpointName,
                 managedPrivateEndpoint,
                 ifMatch)
-            .flatMap(
-                (Response<ManagedPrivateEndpointResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -824,14 +807,7 @@ public final class ManagedPrivateEndpointsClientImpl implements ManagedPrivateEn
         String ifNoneMatch) {
         return getWithResponseAsync(
                 resourceGroupName, factoryName, managedVirtualNetworkName, managedPrivateEndpointName, ifNoneMatch)
-            .flatMap(
-                (Response<ManagedPrivateEndpointResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -855,14 +831,7 @@ public final class ManagedPrivateEndpointsClientImpl implements ManagedPrivateEn
         final String ifNoneMatch = null;
         return getWithResponseAsync(
                 resourceGroupName, factoryName, managedVirtualNetworkName, managedPrivateEndpointName, ifNoneMatch)
-            .flatMap(
-                (Response<ManagedPrivateEndpointResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1075,7 +1044,7 @@ public final class ManagedPrivateEndpointsClientImpl implements ManagedPrivateEn
         String managedPrivateEndpointName) {
         return deleteWithResponseAsync(
                 resourceGroupName, factoryName, managedVirtualNetworkName, managedPrivateEndpointName)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**

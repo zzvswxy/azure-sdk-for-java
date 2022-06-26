@@ -25,7 +25,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.DefaultSecurityRulesClient;
 import com.azure.resourcemanager.network.fluent.models.SecurityRuleInner;
 import com.azure.resourcemanager.network.models.SecurityRuleListResult;
@@ -33,8 +32,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in DefaultSecurityRulesClient. */
 public final class DefaultSecurityRulesClientImpl implements DefaultSecurityRulesClient {
-    private final ClientLogger logger = new ClientLogger(DefaultSecurityRulesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final DefaultSecurityRulesService service;
 
@@ -137,7 +134,7 @@ public final class DefaultSecurityRulesClientImpl implements DefaultSecurityRule
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -199,7 +196,7 @@ public final class DefaultSecurityRulesClientImpl implements DefaultSecurityRule
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -331,7 +328,7 @@ public final class DefaultSecurityRulesClientImpl implements DefaultSecurityRule
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -391,7 +388,7 @@ public final class DefaultSecurityRulesClientImpl implements DefaultSecurityRule
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -421,14 +418,7 @@ public final class DefaultSecurityRulesClientImpl implements DefaultSecurityRule
     public Mono<SecurityRuleInner> getAsync(
         String resourceGroupName, String networkSecurityGroupName, String defaultSecurityRuleName) {
         return getWithResponseAsync(resourceGroupName, networkSecurityGroupName, defaultSecurityRuleName)
-            .flatMap(
-                (Response<SecurityRuleInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

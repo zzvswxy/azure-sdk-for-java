@@ -46,6 +46,9 @@ public final class FluxByteBufferContent extends BinaryDataContent {
 
     @Override
     public Long getLength() {
+        if (bytes.get() != null) {
+            return (long) bytes.get().length;
+        }
         return length;
     }
 
@@ -82,6 +85,11 @@ public final class FluxByteBufferContent extends BinaryDataContent {
     @Override
     public Flux<ByteBuffer> toFluxByteBuffer() {
         return content;
+    }
+
+    @Override
+    public boolean isReplayable() {
+        return false;
     }
 
     private byte[] getBytes() {

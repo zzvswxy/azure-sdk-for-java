@@ -6,17 +6,14 @@ package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
+import com.azure.resourcemanager.network.models.LoadBalancerBackendAddressAdminState;
 import com.azure.resourcemanager.network.models.NatRulePortMapping;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Properties of the load balancer backend addresses. */
 @Fluent
 public final class LoadBalancerBackendAddressPropertiesFormat {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(LoadBalancerBackendAddressPropertiesFormat.class);
-
     /*
      * Reference to an existing virtual network.
      */
@@ -53,6 +50,14 @@ public final class LoadBalancerBackendAddressPropertiesFormat {
      */
     @JsonProperty(value = "inboundNatRulesPortMapping", access = JsonProperty.Access.WRITE_ONLY)
     private List<NatRulePortMapping> inboundNatRulesPortMapping;
+
+    /*
+     * A list of administrative states which once set can override health probe
+     * so that Load Balancer will always forward new connections to backend, or
+     * deny new connections and reset existing connections.
+     */
+    @JsonProperty(value = "adminState")
+    private LoadBalancerBackendAddressAdminState adminState;
 
     /**
      * Get the virtualNetwork property: Reference to an existing virtual network.
@@ -153,6 +158,30 @@ public final class LoadBalancerBackendAddressPropertiesFormat {
      */
     public List<NatRulePortMapping> inboundNatRulesPortMapping() {
         return this.inboundNatRulesPortMapping;
+    }
+
+    /**
+     * Get the adminState property: A list of administrative states which once set can override health probe so that
+     * Load Balancer will always forward new connections to backend, or deny new connections and reset existing
+     * connections.
+     *
+     * @return the adminState value.
+     */
+    public LoadBalancerBackendAddressAdminState adminState() {
+        return this.adminState;
+    }
+
+    /**
+     * Set the adminState property: A list of administrative states which once set can override health probe so that
+     * Load Balancer will always forward new connections to backend, or deny new connections and reset existing
+     * connections.
+     *
+     * @param adminState the adminState value to set.
+     * @return the LoadBalancerBackendAddressPropertiesFormat object itself.
+     */
+    public LoadBalancerBackendAddressPropertiesFormat withAdminState(LoadBalancerBackendAddressAdminState adminState) {
+        this.adminState = adminState;
+        return this;
     }
 
     /**

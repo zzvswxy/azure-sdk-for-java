@@ -22,7 +22,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.ExposureControlsClient;
 import com.azure.resourcemanager.datafactory.fluent.models.ExposureControlBatchResponseInner;
 import com.azure.resourcemanager.datafactory.fluent.models.ExposureControlResponseInner;
@@ -32,8 +31,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in ExposureControlsClient. */
 public final class ExposureControlsClientImpl implements ExposureControlsClient {
-    private final ClientLogger logger = new ClientLogger(ExposureControlsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ExposureControlsService service;
 
@@ -220,14 +217,7 @@ public final class ExposureControlsClientImpl implements ExposureControlsClient 
     private Mono<ExposureControlResponseInner> getFeatureValueAsync(
         String locationId, ExposureControlRequest exposureControlRequest) {
         return getFeatureValueWithResponseAsync(locationId, exposureControlRequest)
-            .flatMap(
-                (Response<ExposureControlResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -392,14 +382,7 @@ public final class ExposureControlsClientImpl implements ExposureControlsClient 
     private Mono<ExposureControlResponseInner> getFeatureValueByFactoryAsync(
         String resourceGroupName, String factoryName, ExposureControlRequest exposureControlRequest) {
         return getFeatureValueByFactoryWithResponseAsync(resourceGroupName, factoryName, exposureControlRequest)
-            .flatMap(
-                (Response<ExposureControlResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -573,14 +556,7 @@ public final class ExposureControlsClientImpl implements ExposureControlsClient 
     private Mono<ExposureControlBatchResponseInner> queryFeatureValuesByFactoryAsync(
         String resourceGroupName, String factoryName, ExposureControlBatchRequest exposureControlBatchRequest) {
         return queryFeatureValuesByFactoryWithResponseAsync(resourceGroupName, factoryName, exposureControlBatchRequest)
-            .flatMap(
-                (Response<ExposureControlBatchResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

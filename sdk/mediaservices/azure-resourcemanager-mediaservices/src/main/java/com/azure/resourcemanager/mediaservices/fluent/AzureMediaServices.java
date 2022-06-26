@@ -45,6 +45,13 @@ public interface AzureMediaServices {
     Duration getDefaultPollInterval();
 
     /**
+     * Gets the AccountFiltersClient object to access its operations.
+     *
+     * @return the AccountFiltersClient object.
+     */
+    AccountFiltersClient getAccountFilters();
+
+    /**
      * Gets the OperationsClient object to access its operations.
      *
      * @return the OperationsClient object.
@@ -80,11 +87,18 @@ public interface AzureMediaServices {
     LocationsClient getLocations();
 
     /**
-     * Gets the AccountFiltersClient object to access its operations.
+     * Gets the MediaServiceOperationStatusesClient object to access its operations.
      *
-     * @return the AccountFiltersClient object.
+     * @return the MediaServiceOperationStatusesClient object.
      */
-    AccountFiltersClient getAccountFilters();
+    MediaServiceOperationStatusesClient getMediaServiceOperationStatuses();
+
+    /**
+     * Gets the MediaServiceOperationResultsClient object to access its operations.
+     *
+     * @return the MediaServiceOperationResultsClient object.
+     */
+    MediaServiceOperationResultsClient getMediaServiceOperationResults();
 
     /**
      * Gets the AssetsClient object to access its operations.
@@ -99,6 +113,27 @@ public interface AzureMediaServices {
      * @return the AssetFiltersClient object.
      */
     AssetFiltersClient getAssetFilters();
+
+    /**
+     * Gets the TracksClient object to access its operations.
+     *
+     * @return the TracksClient object.
+     */
+    TracksClient getTracks();
+
+    /**
+     * Gets the OperationStatusesClient object to access its operations.
+     *
+     * @return the OperationStatusesClient object.
+     */
+    OperationStatusesClient getOperationStatuses();
+
+    /**
+     * Gets the OperationResultsClient object to access its operations.
+     *
+     * @return the OperationResultsClient object.
+     */
+    OperationResultsClient getOperationResults();
 
     /**
      * Gets the ContentKeyPoliciesClient object to access its operations.

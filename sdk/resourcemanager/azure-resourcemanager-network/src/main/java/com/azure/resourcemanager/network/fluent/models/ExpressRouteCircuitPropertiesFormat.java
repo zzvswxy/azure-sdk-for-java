@@ -6,19 +6,15 @@ package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.ExpressRouteCircuitServiceProviderProperties;
 import com.azure.resourcemanager.network.models.ProvisioningState;
 import com.azure.resourcemanager.network.models.ServiceProviderProvisioningState;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Properties of ExpressRouteCircuit. */
 @Fluent
 public final class ExpressRouteCircuitPropertiesFormat {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ExpressRouteCircuitPropertiesFormat.class);
-
     /*
      * Allow classic operations.
      */
@@ -104,6 +100,12 @@ public final class ExpressRouteCircuitPropertiesFormat {
      */
     @JsonProperty(value = "globalReachEnabled")
     private Boolean globalReachEnabled;
+
+    /*
+     * The authorizationKey.
+     */
+    @JsonProperty(value = "authorizationKey")
+    private String authorizationKey;
 
     /**
      * Get the allowClassicOperations property: Allow classic operations.
@@ -367,6 +369,26 @@ public final class ExpressRouteCircuitPropertiesFormat {
      */
     public ExpressRouteCircuitPropertiesFormat withGlobalReachEnabled(Boolean globalReachEnabled) {
         this.globalReachEnabled = globalReachEnabled;
+        return this;
+    }
+
+    /**
+     * Get the authorizationKey property: The authorizationKey.
+     *
+     * @return the authorizationKey value.
+     */
+    public String authorizationKey() {
+        return this.authorizationKey;
+    }
+
+    /**
+     * Set the authorizationKey property: The authorizationKey.
+     *
+     * @param authorizationKey the authorizationKey value to set.
+     * @return the ExpressRouteCircuitPropertiesFormat object itself.
+     */
+    public ExpressRouteCircuitPropertiesFormat withAuthorizationKey(String authorizationKey) {
+        this.authorizationKey = authorizationKey;
         return this;
     }
 

@@ -30,7 +30,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.datafactory.fluent.TriggersClient;
@@ -45,8 +44,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in TriggersClient. */
 public final class TriggersClientImpl implements TriggersClient {
-    private final ClientLogger logger = new ClientLogger(TriggersClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final TriggersService service;
 
@@ -548,14 +545,7 @@ public final class TriggersClientImpl implements TriggersClient {
     private Mono<TriggerQueryResponseInner> queryByFactoryAsync(
         String resourceGroupName, String factoryName, TriggerFilterParameters filterParameters) {
         return queryByFactoryWithResponseAsync(resourceGroupName, factoryName, filterParameters)
-            .flatMap(
-                (Response<TriggerQueryResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -748,14 +738,7 @@ public final class TriggersClientImpl implements TriggersClient {
         TriggerResourceInner trigger,
         String ifMatch) {
         return createOrUpdateWithResponseAsync(resourceGroupName, factoryName, triggerName, trigger, ifMatch)
-            .flatMap(
-                (Response<TriggerResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -775,14 +758,7 @@ public final class TriggersClientImpl implements TriggersClient {
         String resourceGroupName, String factoryName, String triggerName, TriggerResourceInner trigger) {
         final String ifMatch = null;
         return createOrUpdateWithResponseAsync(resourceGroupName, factoryName, triggerName, trigger, ifMatch)
-            .flatMap(
-                (Response<TriggerResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -958,14 +934,7 @@ public final class TriggersClientImpl implements TriggersClient {
     private Mono<TriggerResourceInner> getAsync(
         String resourceGroupName, String factoryName, String triggerName, String ifNoneMatch) {
         return getWithResponseAsync(resourceGroupName, factoryName, triggerName, ifNoneMatch)
-            .flatMap(
-                (Response<TriggerResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -983,14 +952,7 @@ public final class TriggersClientImpl implements TriggersClient {
     private Mono<TriggerResourceInner> getAsync(String resourceGroupName, String factoryName, String triggerName) {
         final String ifNoneMatch = null;
         return getWithResponseAsync(resourceGroupName, factoryName, triggerName, ifNoneMatch)
-            .flatMap(
-                (Response<TriggerResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1147,8 +1109,7 @@ public final class TriggersClientImpl implements TriggersClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String factoryName, String triggerName) {
-        return deleteWithResponseAsync(resourceGroupName, factoryName, triggerName)
-            .flatMap((Response<Void> res) -> Mono.empty());
+        return deleteWithResponseAsync(resourceGroupName, factoryName, triggerName).flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -1574,14 +1535,7 @@ public final class TriggersClientImpl implements TriggersClient {
     private Mono<TriggerSubscriptionOperationStatusInner> getEventSubscriptionStatusAsync(
         String resourceGroupName, String factoryName, String triggerName) {
         return getEventSubscriptionStatusWithResponseAsync(resourceGroupName, factoryName, triggerName)
-            .flatMap(
-                (Response<TriggerSubscriptionOperationStatusInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

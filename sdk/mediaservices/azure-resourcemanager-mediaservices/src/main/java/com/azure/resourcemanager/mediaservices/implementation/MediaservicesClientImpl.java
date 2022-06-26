@@ -28,9 +28,11 @@ import com.azure.core.http.rest.PagedResponseBase;
 import com.azure.core.http.rest.Response;
 import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
+import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
+import com.azure.core.util.polling.PollerFlux;
+import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.mediaservices.fluent.MediaservicesClient;
 import com.azure.resourcemanager.mediaservices.fluent.models.EdgePoliciesInner;
 import com.azure.resourcemanager.mediaservices.fluent.models.MediaServiceInner;
@@ -38,12 +40,12 @@ import com.azure.resourcemanager.mediaservices.models.ListEdgePoliciesInput;
 import com.azure.resourcemanager.mediaservices.models.MediaServiceCollection;
 import com.azure.resourcemanager.mediaservices.models.MediaServiceUpdate;
 import com.azure.resourcemanager.mediaservices.models.SyncStorageKeysInput;
+import java.nio.ByteBuffer;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in MediaservicesClient. */
 public final class MediaservicesClientImpl implements MediaservicesClient {
-    private final ClientLogger logger = new ClientLogger(MediaservicesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final MediaservicesService service;
 
@@ -103,7 +105,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
                 + "/{accountName}")
         @ExpectedResponses({200, 201})
         @UnexpectedResponseExceptionType(ManagementException.class)
-        Mono<Response<MediaServiceInner>> createOrUpdate(
+        Mono<Response<Flux<ByteBuffer>>> createOrUpdate(
             @HostParam("$host") String endpoint,
             @PathParam("subscriptionId") String subscriptionId,
             @PathParam("resourceGroupName") String resourceGroupName,
@@ -132,9 +134,9 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
         @Patch(
             "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Media/mediaservices"
                 + "/{accountName}")
-        @ExpectedResponses({200})
+        @ExpectedResponses({202})
         @UnexpectedResponseExceptionType(ManagementException.class)
-        Mono<Response<MediaServiceInner>> update(
+        Mono<Response<Flux<ByteBuffer>>> update(
             @HostParam("$host") String endpoint,
             @PathParam("subscriptionId") String subscriptionId,
             @PathParam("resourceGroupName") String resourceGroupName,
@@ -215,7 +217,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MediaServiceInner>> listByResourceGroupSinglePageAsync(String resourceGroupName) {
@@ -267,7 +270,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MediaServiceInner>> listByResourceGroupSinglePageAsync(
@@ -316,7 +320,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<MediaServiceInner> listByResourceGroupAsync(String resourceGroupName) {
@@ -332,7 +336,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<MediaServiceInner> listByResourceGroupAsync(String resourceGroupName, Context context) {
@@ -348,7 +352,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<MediaServiceInner> listByResourceGroup(String resourceGroupName) {
@@ -363,7 +367,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<MediaServiceInner> listByResourceGroup(String resourceGroupName, Context context) {
@@ -378,7 +382,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the details of a Media Services account.
+     * @return the details of a Media Services account along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<MediaServiceInner>> getByResourceGroupWithResponseAsync(
@@ -427,7 +432,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the details of a Media Services account.
+     * @return the details of a Media Services account along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<MediaServiceInner>> getByResourceGroupWithResponseAsync(
@@ -472,19 +478,12 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the details of a Media Services account.
+     * @return the details of a Media Services account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<MediaServiceInner> getByResourceGroupAsync(String resourceGroupName, String accountName) {
         return getByResourceGroupWithResponseAsync(resourceGroupName, accountName)
-            .flatMap(
-                (Response<MediaServiceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -511,7 +510,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the details of a Media Services account.
+     * @return the details of a Media Services account along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<MediaServiceInner> getByResourceGroupWithResponse(
@@ -528,10 +527,10 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a Media Services account.
+     * @return a Media Services account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    private Mono<Response<MediaServiceInner>> createOrUpdateWithResponseAsync(
+    private Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
         String resourceGroupName, String accountName, MediaServiceInner parameters) {
         if (this.client.getEndpoint() == null) {
             return Mono
@@ -584,10 +583,10 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a Media Services account.
+     * @return a Media Services account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    private Mono<Response<MediaServiceInner>> createOrUpdateWithResponseAsync(
+    private Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
         String resourceGroupName, String accountName, MediaServiceInner parameters, Context context) {
         if (this.client.getEndpoint() == null) {
             return Mono
@@ -636,20 +635,119 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a Media Services account.
+     * @return the {@link PollerFlux} for polling of a Media Services account.
+     */
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
+    private PollerFlux<PollResult<MediaServiceInner>, MediaServiceInner> beginCreateOrUpdateAsync(
+        String resourceGroupName, String accountName, MediaServiceInner parameters) {
+        Mono<Response<Flux<ByteBuffer>>> mono =
+            createOrUpdateWithResponseAsync(resourceGroupName, accountName, parameters);
+        return this
+            .client
+            .<MediaServiceInner, MediaServiceInner>getLroResult(
+                mono,
+                this.client.getHttpPipeline(),
+                MediaServiceInner.class,
+                MediaServiceInner.class,
+                this.client.getContext());
+    }
+
+    /**
+     * Creates or updates a Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @param context The context to associate with this operation.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the {@link PollerFlux} for polling of a Media Services account.
+     */
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
+    private PollerFlux<PollResult<MediaServiceInner>, MediaServiceInner> beginCreateOrUpdateAsync(
+        String resourceGroupName, String accountName, MediaServiceInner parameters, Context context) {
+        context = this.client.mergeContext(context);
+        Mono<Response<Flux<ByteBuffer>>> mono =
+            createOrUpdateWithResponseAsync(resourceGroupName, accountName, parameters, context);
+        return this
+            .client
+            .<MediaServiceInner, MediaServiceInner>getLroResult(
+                mono, this.client.getHttpPipeline(), MediaServiceInner.class, MediaServiceInner.class, context);
+    }
+
+    /**
+     * Creates or updates a Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the {@link SyncPoller} for polling of a Media Services account.
+     */
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
+    public SyncPoller<PollResult<MediaServiceInner>, MediaServiceInner> beginCreateOrUpdate(
+        String resourceGroupName, String accountName, MediaServiceInner parameters) {
+        return beginCreateOrUpdateAsync(resourceGroupName, accountName, parameters).getSyncPoller();
+    }
+
+    /**
+     * Creates or updates a Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @param context The context to associate with this operation.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the {@link SyncPoller} for polling of a Media Services account.
+     */
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
+    public SyncPoller<PollResult<MediaServiceInner>, MediaServiceInner> beginCreateOrUpdate(
+        String resourceGroupName, String accountName, MediaServiceInner parameters, Context context) {
+        return beginCreateOrUpdateAsync(resourceGroupName, accountName, parameters, context).getSyncPoller();
+    }
+
+    /**
+     * Creates or updates a Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return a Media Services account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<MediaServiceInner> createOrUpdateAsync(
         String resourceGroupName, String accountName, MediaServiceInner parameters) {
-        return createOrUpdateWithResponseAsync(resourceGroupName, accountName, parameters)
-            .flatMap(
-                (Response<MediaServiceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return beginCreateOrUpdateAsync(resourceGroupName, accountName, parameters)
+            .last()
+            .flatMap(this.client::getLroFinalResultOrError);
+    }
+
+    /**
+     * Creates or updates a Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @param context The context to associate with this operation.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return a Media Services account on successful completion of {@link Mono}.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    private Mono<MediaServiceInner> createOrUpdateAsync(
+        String resourceGroupName, String accountName, MediaServiceInner parameters, Context context) {
+        return beginCreateOrUpdateAsync(resourceGroupName, accountName, parameters, context)
+            .last()
+            .flatMap(this.client::getLroFinalResultOrError);
     }
 
     /**
@@ -682,9 +780,9 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @return a Media Services account.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<MediaServiceInner> createOrUpdateWithResponse(
+    public MediaServiceInner createOrUpdate(
         String resourceGroupName, String accountName, MediaServiceInner parameters, Context context) {
-        return createOrUpdateWithResponseAsync(resourceGroupName, accountName, parameters, context).block();
+        return createOrUpdateAsync(resourceGroupName, accountName, parameters, context).block();
     }
 
     /**
@@ -695,7 +793,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Void>> deleteWithResponseAsync(String resourceGroupName, String accountName) {
@@ -743,7 +841,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Void>> deleteWithResponseAsync(
@@ -788,11 +886,11 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String accountName) {
-        return deleteWithResponseAsync(resourceGroupName, accountName).flatMap((Response<Void> res) -> Mono.empty());
+        return deleteWithResponseAsync(resourceGroupName, accountName).flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -818,7 +916,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<Void> deleteWithResponse(String resourceGroupName, String accountName, Context context) {
@@ -834,10 +932,10 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a Media Services account.
+     * @return a Media Services account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    private Mono<Response<MediaServiceInner>> updateWithResponseAsync(
+    private Mono<Response<Flux<ByteBuffer>>> updateWithResponseAsync(
         String resourceGroupName, String accountName, MediaServiceUpdate parameters) {
         if (this.client.getEndpoint() == null) {
             return Mono
@@ -890,10 +988,10 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a Media Services account.
+     * @return a Media Services account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    private Mono<Response<MediaServiceInner>> updateWithResponseAsync(
+    private Mono<Response<Flux<ByteBuffer>>> updateWithResponseAsync(
         String resourceGroupName, String accountName, MediaServiceUpdate parameters, Context context) {
         if (this.client.getEndpoint() == null) {
             return Mono
@@ -942,20 +1040,118 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a Media Services account.
+     * @return the {@link PollerFlux} for polling of a Media Services account.
+     */
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
+    private PollerFlux<PollResult<MediaServiceInner>, MediaServiceInner> beginUpdateAsync(
+        String resourceGroupName, String accountName, MediaServiceUpdate parameters) {
+        Mono<Response<Flux<ByteBuffer>>> mono = updateWithResponseAsync(resourceGroupName, accountName, parameters);
+        return this
+            .client
+            .<MediaServiceInner, MediaServiceInner>getLroResult(
+                mono,
+                this.client.getHttpPipeline(),
+                MediaServiceInner.class,
+                MediaServiceInner.class,
+                this.client.getContext());
+    }
+
+    /**
+     * Updates an existing Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @param context The context to associate with this operation.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the {@link PollerFlux} for polling of a Media Services account.
+     */
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
+    private PollerFlux<PollResult<MediaServiceInner>, MediaServiceInner> beginUpdateAsync(
+        String resourceGroupName, String accountName, MediaServiceUpdate parameters, Context context) {
+        context = this.client.mergeContext(context);
+        Mono<Response<Flux<ByteBuffer>>> mono =
+            updateWithResponseAsync(resourceGroupName, accountName, parameters, context);
+        return this
+            .client
+            .<MediaServiceInner, MediaServiceInner>getLroResult(
+                mono, this.client.getHttpPipeline(), MediaServiceInner.class, MediaServiceInner.class, context);
+    }
+
+    /**
+     * Updates an existing Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the {@link SyncPoller} for polling of a Media Services account.
+     */
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
+    public SyncPoller<PollResult<MediaServiceInner>, MediaServiceInner> beginUpdate(
+        String resourceGroupName, String accountName, MediaServiceUpdate parameters) {
+        return beginUpdateAsync(resourceGroupName, accountName, parameters).getSyncPoller();
+    }
+
+    /**
+     * Updates an existing Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @param context The context to associate with this operation.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the {@link SyncPoller} for polling of a Media Services account.
+     */
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
+    public SyncPoller<PollResult<MediaServiceInner>, MediaServiceInner> beginUpdate(
+        String resourceGroupName, String accountName, MediaServiceUpdate parameters, Context context) {
+        return beginUpdateAsync(resourceGroupName, accountName, parameters, context).getSyncPoller();
+    }
+
+    /**
+     * Updates an existing Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return a Media Services account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<MediaServiceInner> updateAsync(
         String resourceGroupName, String accountName, MediaServiceUpdate parameters) {
-        return updateWithResponseAsync(resourceGroupName, accountName, parameters)
-            .flatMap(
-                (Response<MediaServiceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return beginUpdateAsync(resourceGroupName, accountName, parameters)
+            .last()
+            .flatMap(this.client::getLroFinalResultOrError);
+    }
+
+    /**
+     * Updates an existing Media Services account.
+     *
+     * @param resourceGroupName The name of the resource group within the Azure subscription.
+     * @param accountName The Media Services account name.
+     * @param parameters The request parameters.
+     * @param context The context to associate with this operation.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return a Media Services account on successful completion of {@link Mono}.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    private Mono<MediaServiceInner> updateAsync(
+        String resourceGroupName, String accountName, MediaServiceUpdate parameters, Context context) {
+        return beginUpdateAsync(resourceGroupName, accountName, parameters, context)
+            .last()
+            .flatMap(this.client::getLroFinalResultOrError);
     }
 
     /**
@@ -987,9 +1183,9 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @return a Media Services account.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<MediaServiceInner> updateWithResponse(
+    public MediaServiceInner update(
         String resourceGroupName, String accountName, MediaServiceUpdate parameters, Context context) {
-        return updateWithResponseAsync(resourceGroupName, accountName, parameters, context).block();
+        return updateAsync(resourceGroupName, accountName, parameters, context).block();
     }
 
     /**
@@ -1001,7 +1197,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Void>> syncStorageKeysWithResponseAsync(
@@ -1057,7 +1253,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Void>> syncStorageKeysWithResponseAsync(
@@ -1109,13 +1305,13 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> syncStorageKeysAsync(
         String resourceGroupName, String accountName, SyncStorageKeysInput parameters) {
         return syncStorageKeysWithResponseAsync(resourceGroupName, accountName, parameters)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -1143,7 +1339,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<Void> syncStorageKeysWithResponse(
@@ -1152,7 +1348,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
     }
 
     /**
-     * List the media edge policies associated with the Media Services account.
+     * List all the media edge policies associated with the Media Services account.
      *
      * @param resourceGroupName The name of the resource group within the Azure subscription.
      * @param accountName The Media Services account name.
@@ -1160,7 +1356,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the response body along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<EdgePoliciesInner>> listEdgePoliciesWithResponseAsync(
@@ -1207,7 +1403,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
     }
 
     /**
-     * List the media edge policies associated with the Media Services account.
+     * List all the media edge policies associated with the Media Services account.
      *
      * @param resourceGroupName The name of the resource group within the Azure subscription.
      * @param accountName The Media Services account name.
@@ -1216,7 +1412,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the response body along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<EdgePoliciesInner>> listEdgePoliciesWithResponseAsync(
@@ -1260,7 +1456,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
     }
 
     /**
-     * List the media edge policies associated with the Media Services account.
+     * List all the media edge policies associated with the Media Services account.
      *
      * @param resourceGroupName The name of the resource group within the Azure subscription.
      * @param accountName The Media Services account name.
@@ -1268,24 +1464,17 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the response body on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<EdgePoliciesInner> listEdgePoliciesAsync(
         String resourceGroupName, String accountName, ListEdgePoliciesInput parameters) {
         return listEdgePoliciesWithResponseAsync(resourceGroupName, accountName, parameters)
-            .flatMap(
-                (Response<EdgePoliciesInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
-     * List the media edge policies associated with the Media Services account.
+     * List all the media edge policies associated with the Media Services account.
      *
      * @param resourceGroupName The name of the resource group within the Azure subscription.
      * @param accountName The Media Services account name.
@@ -1302,7 +1491,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
     }
 
     /**
-     * List the media edge policies associated with the Media Services account.
+     * List all the media edge policies associated with the Media Services account.
      *
      * @param resourceGroupName The name of the resource group within the Azure subscription.
      * @param accountName The Media Services account name.
@@ -1311,7 +1500,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the response body along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<EdgePoliciesInner> listEdgePoliciesWithResponse(
@@ -1324,7 +1513,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MediaServiceInner>> listSinglePageAsync() {
@@ -1370,7 +1560,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MediaServiceInner>> listSinglePageAsync(Context context) {
@@ -1411,7 +1602,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<MediaServiceInner> listAsync() {
@@ -1426,7 +1617,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<MediaServiceInner> listAsync(Context context) {
@@ -1439,7 +1630,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<MediaServiceInner> list() {
@@ -1453,7 +1644,7 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<MediaServiceInner> list(Context context) {
@@ -1467,7 +1658,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MediaServiceInner>> listNextSinglePageAsync(String nextLink) {
@@ -1503,7 +1695,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MediaServiceInner>> listNextSinglePageAsync(String nextLink, Context context) {
@@ -1538,7 +1731,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MediaServiceInner>> listBySubscriptionNextSinglePageAsync(String nextLink) {
@@ -1575,7 +1769,8 @@ public final class MediaservicesClientImpl implements MediaservicesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of MediaService items.
+     * @return a collection of MediaService items along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MediaServiceInner>> listBySubscriptionNextSinglePageAsync(

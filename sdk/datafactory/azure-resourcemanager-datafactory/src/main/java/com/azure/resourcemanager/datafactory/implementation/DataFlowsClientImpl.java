@@ -28,7 +28,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.DataFlowsClient;
 import com.azure.resourcemanager.datafactory.fluent.models.DataFlowResourceInner;
 import com.azure.resourcemanager.datafactory.models.DataFlowListResponse;
@@ -36,8 +35,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in DataFlowsClient. */
 public final class DataFlowsClientImpl implements DataFlowsClient {
-    private final ClientLogger logger = new ClientLogger(DataFlowsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final DataFlowsService service;
 
@@ -294,14 +291,7 @@ public final class DataFlowsClientImpl implements DataFlowsClient {
         DataFlowResourceInner dataFlow,
         String ifMatch) {
         return createOrUpdateWithResponseAsync(resourceGroupName, factoryName, dataFlowName, dataFlow, ifMatch)
-            .flatMap(
-                (Response<DataFlowResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -321,14 +311,7 @@ public final class DataFlowsClientImpl implements DataFlowsClient {
         String resourceGroupName, String factoryName, String dataFlowName, DataFlowResourceInner dataFlow) {
         final String ifMatch = null;
         return createOrUpdateWithResponseAsync(resourceGroupName, factoryName, dataFlowName, dataFlow, ifMatch)
-            .flatMap(
-                (Response<DataFlowResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -504,14 +487,7 @@ public final class DataFlowsClientImpl implements DataFlowsClient {
     private Mono<DataFlowResourceInner> getAsync(
         String resourceGroupName, String factoryName, String dataFlowName, String ifNoneMatch) {
         return getWithResponseAsync(resourceGroupName, factoryName, dataFlowName, ifNoneMatch)
-            .flatMap(
-                (Response<DataFlowResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -529,14 +505,7 @@ public final class DataFlowsClientImpl implements DataFlowsClient {
     private Mono<DataFlowResourceInner> getAsync(String resourceGroupName, String factoryName, String dataFlowName) {
         final String ifNoneMatch = null;
         return getWithResponseAsync(resourceGroupName, factoryName, dataFlowName, ifNoneMatch)
-            .flatMap(
-                (Response<DataFlowResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -693,8 +662,7 @@ public final class DataFlowsClientImpl implements DataFlowsClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String factoryName, String dataFlowName) {
-        return deleteWithResponseAsync(resourceGroupName, factoryName, dataFlowName)
-            .flatMap((Response<Void> res) -> Mono.empty());
+        return deleteWithResponseAsync(resourceGroupName, factoryName, dataFlowName).flatMap(ignored -> Mono.empty());
     }
 
     /**

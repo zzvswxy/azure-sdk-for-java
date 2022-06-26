@@ -6,20 +6,17 @@ package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
+import com.azure.resourcemanager.network.models.HubRoutingPreference;
 import com.azure.resourcemanager.network.models.PreferredRoutingGateway;
 import com.azure.resourcemanager.network.models.ProvisioningState;
 import com.azure.resourcemanager.network.models.RoutingState;
 import com.azure.resourcemanager.network.models.VirtualHubRouteTable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Parameters for VirtualHub. */
 @Fluent
 public final class VirtualHubProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VirtualHubProperties.class);
-
     /*
      * The VirtualWAN to which the VirtualHub belongs.
      */
@@ -133,6 +130,12 @@ public final class VirtualHubProperties {
      */
     @JsonProperty(value = "preferredRoutingGateway")
     private PreferredRoutingGateway preferredRoutingGateway;
+
+    /*
+     * The hubRoutingPreference of this VirtualHub.
+     */
+    @JsonProperty(value = "hubRoutingPreference")
+    private HubRoutingPreference hubRoutingPreference;
 
     /**
      * Get the virtualWan property: The VirtualWAN to which the VirtualHub belongs.
@@ -469,6 +472,26 @@ public final class VirtualHubProperties {
      */
     public VirtualHubProperties withPreferredRoutingGateway(PreferredRoutingGateway preferredRoutingGateway) {
         this.preferredRoutingGateway = preferredRoutingGateway;
+        return this;
+    }
+
+    /**
+     * Get the hubRoutingPreference property: The hubRoutingPreference of this VirtualHub.
+     *
+     * @return the hubRoutingPreference value.
+     */
+    public HubRoutingPreference hubRoutingPreference() {
+        return this.hubRoutingPreference;
+    }
+
+    /**
+     * Set the hubRoutingPreference property: The hubRoutingPreference of this VirtualHub.
+     *
+     * @param hubRoutingPreference the hubRoutingPreference value to set.
+     * @return the VirtualHubProperties object itself.
+     */
+    public VirtualHubProperties withHubRoutingPreference(HubRoutingPreference hubRoutingPreference) {
+        this.hubRoutingPreference = hubRoutingPreference;
         return this;
     }
 
