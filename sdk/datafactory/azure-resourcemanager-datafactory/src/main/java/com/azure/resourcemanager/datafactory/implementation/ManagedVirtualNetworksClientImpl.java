@@ -27,7 +27,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.ManagedVirtualNetworksClient;
 import com.azure.resourcemanager.datafactory.fluent.models.ManagedVirtualNetworkResourceInner;
 import com.azure.resourcemanager.datafactory.models.ManagedVirtualNetworkListResponse;
@@ -35,8 +34,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in ManagedVirtualNetworksClient. */
 public final class ManagedVirtualNetworksClientImpl implements ManagedVirtualNetworksClient {
-    private final ClientLogger logger = new ClientLogger(ManagedVirtualNetworksClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ManagedVirtualNetworksService service;
 
@@ -473,14 +470,7 @@ public final class ManagedVirtualNetworksClientImpl implements ManagedVirtualNet
         String ifMatch) {
         return createOrUpdateWithResponseAsync(
                 resourceGroupName, factoryName, managedVirtualNetworkName, managedVirtualNetwork, ifMatch)
-            .flatMap(
-                (Response<ManagedVirtualNetworkResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -504,14 +494,7 @@ public final class ManagedVirtualNetworksClientImpl implements ManagedVirtualNet
         final String ifMatch = null;
         return createOrUpdateWithResponseAsync(
                 resourceGroupName, factoryName, managedVirtualNetworkName, managedVirtualNetwork, ifMatch)
-            .flatMap(
-                (Response<ManagedVirtualNetworkResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -703,14 +686,7 @@ public final class ManagedVirtualNetworksClientImpl implements ManagedVirtualNet
     private Mono<ManagedVirtualNetworkResourceInner> getAsync(
         String resourceGroupName, String factoryName, String managedVirtualNetworkName, String ifNoneMatch) {
         return getWithResponseAsync(resourceGroupName, factoryName, managedVirtualNetworkName, ifNoneMatch)
-            .flatMap(
-                (Response<ManagedVirtualNetworkResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -729,14 +705,7 @@ public final class ManagedVirtualNetworksClientImpl implements ManagedVirtualNet
         String resourceGroupName, String factoryName, String managedVirtualNetworkName) {
         final String ifNoneMatch = null;
         return getWithResponseAsync(resourceGroupName, factoryName, managedVirtualNetworkName, ifNoneMatch)
-            .flatMap(
-                (Response<ManagedVirtualNetworkResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

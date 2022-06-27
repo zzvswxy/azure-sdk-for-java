@@ -28,7 +28,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.LinkedServicesClient;
 import com.azure.resourcemanager.datafactory.fluent.models.LinkedServiceResourceInner;
 import com.azure.resourcemanager.datafactory.models.LinkedServiceListResponse;
@@ -36,8 +35,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in LinkedServicesClient. */
 public final class LinkedServicesClientImpl implements LinkedServicesClient {
-    private final ClientLogger logger = new ClientLogger(LinkedServicesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final LinkedServicesService service;
 
@@ -479,14 +476,7 @@ public final class LinkedServicesClientImpl implements LinkedServicesClient {
         String ifMatch) {
         return createOrUpdateWithResponseAsync(
                 resourceGroupName, factoryName, linkedServiceName, linkedService, ifMatch)
-            .flatMap(
-                (Response<LinkedServiceResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -510,14 +500,7 @@ public final class LinkedServicesClientImpl implements LinkedServicesClient {
         final String ifMatch = null;
         return createOrUpdateWithResponseAsync(
                 resourceGroupName, factoryName, linkedServiceName, linkedService, ifMatch)
-            .flatMap(
-                (Response<LinkedServiceResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -699,14 +682,7 @@ public final class LinkedServicesClientImpl implements LinkedServicesClient {
     private Mono<LinkedServiceResourceInner> getAsync(
         String resourceGroupName, String factoryName, String linkedServiceName, String ifNoneMatch) {
         return getWithResponseAsync(resourceGroupName, factoryName, linkedServiceName, ifNoneMatch)
-            .flatMap(
-                (Response<LinkedServiceResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -725,14 +701,7 @@ public final class LinkedServicesClientImpl implements LinkedServicesClient {
         String resourceGroupName, String factoryName, String linkedServiceName) {
         final String ifNoneMatch = null;
         return getWithResponseAsync(resourceGroupName, factoryName, linkedServiceName, ifNoneMatch)
-            .flatMap(
-                (Response<LinkedServiceResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -892,7 +861,7 @@ public final class LinkedServicesClientImpl implements LinkedServicesClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String factoryName, String linkedServiceName) {
         return deleteWithResponseAsync(resourceGroupName, factoryName, linkedServiceName)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**

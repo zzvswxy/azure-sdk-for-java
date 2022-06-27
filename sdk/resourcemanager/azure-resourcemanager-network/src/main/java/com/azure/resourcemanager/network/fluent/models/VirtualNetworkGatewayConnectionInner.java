@@ -8,6 +8,7 @@ import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
 import com.azure.core.management.SubResource;
 import com.azure.core.util.logging.ClientLogger;
+import com.azure.resourcemanager.network.models.GatewayCustomBgpIpAddressIpConfiguration;
 import com.azure.resourcemanager.network.models.IpsecPolicy;
 import com.azure.resourcemanager.network.models.ProvisioningState;
 import com.azure.resourcemanager.network.models.TrafficSelectorPolicy;
@@ -16,7 +17,6 @@ import com.azure.resourcemanager.network.models.VirtualNetworkGatewayConnectionM
 import com.azure.resourcemanager.network.models.VirtualNetworkGatewayConnectionProtocol;
 import com.azure.resourcemanager.network.models.VirtualNetworkGatewayConnectionStatus;
 import com.azure.resourcemanager.network.models.VirtualNetworkGatewayConnectionType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +24,6 @@ import java.util.Map;
 /** A common class for general resource information. */
 @Fluent
 public final class VirtualNetworkGatewayConnectionInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VirtualNetworkGatewayConnectionInner.class);
-
     /*
      * Properties of the virtual network gateway connection.
      */
@@ -460,6 +458,32 @@ public final class VirtualNetworkGatewayConnectionInner extends Resource {
     }
 
     /**
+     * Get the gatewayCustomBgpIpAddresses property: GatewayCustomBgpIpAddresses to be used for virtual network gateway
+     * Connection.
+     *
+     * @return the gatewayCustomBgpIpAddresses value.
+     */
+    public List<GatewayCustomBgpIpAddressIpConfiguration> gatewayCustomBgpIpAddresses() {
+        return this.innerProperties() == null ? null : this.innerProperties().gatewayCustomBgpIpAddresses();
+    }
+
+    /**
+     * Set the gatewayCustomBgpIpAddresses property: GatewayCustomBgpIpAddresses to be used for virtual network gateway
+     * Connection.
+     *
+     * @param gatewayCustomBgpIpAddresses the gatewayCustomBgpIpAddresses value to set.
+     * @return the VirtualNetworkGatewayConnectionInner object itself.
+     */
+    public VirtualNetworkGatewayConnectionInner withGatewayCustomBgpIpAddresses(
+        List<GatewayCustomBgpIpAddressIpConfiguration> gatewayCustomBgpIpAddresses) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new VirtualNetworkGatewayConnectionPropertiesFormatInner();
+        }
+        this.innerProperties().withGatewayCustomBgpIpAddresses(gatewayCustomBgpIpAddresses);
+        return this;
+    }
+
+    /**
      * Get the useLocalAzureIpAddress property: Use private local Azure IP for the connection.
      *
      * @return the useLocalAzureIpAddress value.
@@ -601,7 +625,7 @@ public final class VirtualNetworkGatewayConnectionInner extends Resource {
      */
     public void validate() {
         if (innerProperties() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException(
                         "Missing required property innerProperties in model VirtualNetworkGatewayConnectionInner"));
@@ -609,4 +633,6 @@ public final class VirtualNetworkGatewayConnectionInner extends Resource {
             innerProperties().validate();
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(VirtualNetworkGatewayConnectionInner.class);
 }

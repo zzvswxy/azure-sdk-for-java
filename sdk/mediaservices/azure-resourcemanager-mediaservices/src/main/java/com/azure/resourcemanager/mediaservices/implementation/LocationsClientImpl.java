@@ -22,7 +22,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.mediaservices.fluent.LocationsClient;
 import com.azure.resourcemanager.mediaservices.fluent.models.EntityNameAvailabilityCheckOutputInner;
 import com.azure.resourcemanager.mediaservices.models.CheckNameAvailabilityInput;
@@ -30,8 +29,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in LocationsClient. */
 public final class LocationsClientImpl implements LocationsClient {
-    private final ClientLogger logger = new ClientLogger(LocationsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final LocationsService service;
 
@@ -74,12 +71,13 @@ public final class LocationsClientImpl implements LocationsClient {
     /**
      * Checks whether the Media Service resource name is available.
      *
-     * @param locationName The name of the location.
+     * @param locationName Location name.
      * @param parameters The request parameters.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response from the check name availability request.
+     * @return the response from the check name availability request along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<EntityNameAvailabilityCheckOutputInner>> checkNameAvailabilityWithResponseAsync(
@@ -123,13 +121,14 @@ public final class LocationsClientImpl implements LocationsClient {
     /**
      * Checks whether the Media Service resource name is available.
      *
-     * @param locationName The name of the location.
+     * @param locationName Location name.
      * @param parameters The request parameters.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response from the check name availability request.
+     * @return the response from the check name availability request along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<EntityNameAvailabilityCheckOutputInner>> checkNameAvailabilityWithResponseAsync(
@@ -170,31 +169,24 @@ public final class LocationsClientImpl implements LocationsClient {
     /**
      * Checks whether the Media Service resource name is available.
      *
-     * @param locationName The name of the location.
+     * @param locationName Location name.
      * @param parameters The request parameters.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response from the check name availability request.
+     * @return the response from the check name availability request on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<EntityNameAvailabilityCheckOutputInner> checkNameAvailabilityAsync(
         String locationName, CheckNameAvailabilityInput parameters) {
         return checkNameAvailabilityWithResponseAsync(locationName, parameters)
-            .flatMap(
-                (Response<EntityNameAvailabilityCheckOutputInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
      * Checks whether the Media Service resource name is available.
      *
-     * @param locationName The name of the location.
+     * @param locationName Location name.
      * @param parameters The request parameters.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
@@ -210,13 +202,13 @@ public final class LocationsClientImpl implements LocationsClient {
     /**
      * Checks whether the Media Service resource name is available.
      *
-     * @param locationName The name of the location.
+     * @param locationName Location name.
      * @param parameters The request parameters.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response from the check name availability request.
+     * @return the response from the check name availability request along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<EntityNameAvailabilityCheckOutputInner> checkNameAvailabilityWithResponse(

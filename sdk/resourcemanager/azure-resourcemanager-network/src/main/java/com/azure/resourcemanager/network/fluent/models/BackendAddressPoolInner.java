@@ -6,19 +6,15 @@ package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.GatewayLoadBalancerTunnelInterface;
 import com.azure.resourcemanager.network.models.LoadBalancerBackendAddress;
 import com.azure.resourcemanager.network.models.ProvisioningState;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Pool of backend IP addresses. */
 @Fluent
 public final class BackendAddressPoolInner extends SubResource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(BackendAddressPoolInner.class);
-
     /*
      * Properties of load balancer backend address pool.
      */
@@ -224,6 +220,31 @@ public final class BackendAddressPoolInner extends SubResource {
      */
     public ProvisioningState provisioningState() {
         return this.innerProperties() == null ? null : this.innerProperties().provisioningState();
+    }
+
+    /**
+     * Get the drainPeriodInSeconds property: Amount of seconds Load Balancer waits for before sending RESET to client
+     * and backend address.
+     *
+     * @return the drainPeriodInSeconds value.
+     */
+    public Integer drainPeriodInSeconds() {
+        return this.innerProperties() == null ? null : this.innerProperties().drainPeriodInSeconds();
+    }
+
+    /**
+     * Set the drainPeriodInSeconds property: Amount of seconds Load Balancer waits for before sending RESET to client
+     * and backend address.
+     *
+     * @param drainPeriodInSeconds the drainPeriodInSeconds value to set.
+     * @return the BackendAddressPoolInner object itself.
+     */
+    public BackendAddressPoolInner withDrainPeriodInSeconds(Integer drainPeriodInSeconds) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new BackendAddressPoolPropertiesFormat();
+        }
+        this.innerProperties().withDrainPeriodInSeconds(drainPeriodInSeconds);
+        return this;
     }
 
     /**

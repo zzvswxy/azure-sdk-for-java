@@ -5,7 +5,6 @@
 package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.AadAuthenticationParameters;
 import com.azure.resourcemanager.network.models.IpsecPolicy;
 import com.azure.resourcemanager.network.models.RadiusServer;
@@ -15,15 +14,12 @@ import com.azure.resourcemanager.network.models.VpnServerConfigRadiusClientRootC
 import com.azure.resourcemanager.network.models.VpnServerConfigRadiusServerRootCertificate;
 import com.azure.resourcemanager.network.models.VpnServerConfigVpnClientRevokedCertificate;
 import com.azure.resourcemanager.network.models.VpnServerConfigVpnClientRootCertificate;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Parameters for VpnServerConfiguration. */
 @Fluent
 public final class VpnServerConfigurationProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VpnServerConfigurationProperties.class);
-
     /*
      * The name of the VpnServerConfiguration that is unique within a resource
      * group.
@@ -111,6 +107,12 @@ public final class VpnServerConfigurationProperties {
      */
     @JsonProperty(value = "p2SVpnGateways", access = JsonProperty.Access.WRITE_ONLY)
     private List<P2SVpnGatewayInner> p2SVpnGateways;
+
+    /*
+     * List of all VpnServerConfigurationPolicyGroups.
+     */
+    @JsonProperty(value = "configurationPolicyGroups")
+    private List<VpnServerConfigurationPolicyGroupInner> configurationPolicyGroups;
 
     /*
      * A unique read-only string that changes whenever the resource is updated.
@@ -388,6 +390,27 @@ public final class VpnServerConfigurationProperties {
     }
 
     /**
+     * Get the configurationPolicyGroups property: List of all VpnServerConfigurationPolicyGroups.
+     *
+     * @return the configurationPolicyGroups value.
+     */
+    public List<VpnServerConfigurationPolicyGroupInner> configurationPolicyGroups() {
+        return this.configurationPolicyGroups;
+    }
+
+    /**
+     * Set the configurationPolicyGroups property: List of all VpnServerConfigurationPolicyGroups.
+     *
+     * @param configurationPolicyGroups the configurationPolicyGroups value to set.
+     * @return the VpnServerConfigurationProperties object itself.
+     */
+    public VpnServerConfigurationProperties withConfigurationPolicyGroups(
+        List<VpnServerConfigurationPolicyGroupInner> configurationPolicyGroups) {
+        this.configurationPolicyGroups = configurationPolicyGroups;
+        return this;
+    }
+
+    /**
      * Get the etag property: A unique read-only string that changes whenever the resource is updated.
      *
      * @return the etag value.
@@ -425,6 +448,9 @@ public final class VpnServerConfigurationProperties {
         }
         if (p2SVpnGateways() != null) {
             p2SVpnGateways().forEach(e -> e.validate());
+        }
+        if (configurationPolicyGroups() != null) {
+            configurationPolicyGroups().forEach(e -> e.validate());
         }
     }
 }

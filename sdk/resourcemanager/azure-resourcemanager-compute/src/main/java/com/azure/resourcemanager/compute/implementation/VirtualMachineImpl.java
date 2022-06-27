@@ -192,7 +192,7 @@ class VirtualMachineImpl
     private final Map<String, DeleteOptions> secondaryNetworkInterfaceDeleteOptions = new HashMap<>();
 
     // Snapshot of the updateParameter when update() is called, used to compare whether there is modification to VM during updateResourceAsync
-    VirtualMachineUpdateInner updateParameterSnapshotOnUpdate;
+    private VirtualMachineUpdateInner updateParameterSnapshotOnUpdate;
     private static final SerializerAdapter SERIALIZER_ADAPTER =
         SerializerFactory.createDefaultManagementSerializerAdapter();
 
@@ -229,7 +229,7 @@ class VirtualMachineImpl
     public VirtualMachineImpl update() {
         updateParameterSnapshotOnUpdate = this.deepCopyInnerToUpdateParameter();
         return super.update();
-    };
+    }
 
     @Override
     public Mono<VirtualMachine> refreshAsync() {
@@ -2696,6 +2696,32 @@ class VirtualMachineImpl
             this.innerModel().withVirtualMachineScaleSet(new SubResource().withId(scaleSet.id()));
         }
         return this;
+    }
+
+    @Override
+    public VirtualMachineImpl withOSDisk(String diskId) {
+        if (diskId == null) {
+            return this;
+        }
+        if (!isManagedDiskEnabled() || this.innerModel().storageProfile().osDisk().managedDisk() == null) {
+            return this;
+        }
+        OSDisk osDisk = new OSDisk()
+            // CreateOption is marked "required" in swagger, but in actual update, it's not.
+            // This is a workaround for bypassing this swagger bug.
+            .withCreateOption(this.innerModel().storageProfile().osDisk().createOption());
+        osDisk.withManagedDisk(new ManagedDiskParameters().withId(diskId));
+        this.storageProfile().withOsDisk(osDisk);
+        this.storageProfile().osDisk().managedDisk().withId(diskId);
+        return this;
+    }
+
+    @Override
+    public VirtualMachineImpl withOSDisk(Disk disk) {
+        if (disk == null) {
+            return this;
+        }
+        return withOSDisk(disk.id());
     }
 
     /** Class to manage Data disk collection. */

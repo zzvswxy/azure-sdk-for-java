@@ -83,6 +83,7 @@ import java.util.Map;
     @JsonSubTypes.Type(name = "AmazonRdsForSqlServerTable", value = AmazonRdsForSqlServerTableDataset.class),
     @JsonSubTypes.Type(name = "RestResource", value = RestResourceDataset.class),
     @JsonSubTypes.Type(name = "SapTableResource", value = SapTableResourceDataset.class),
+    @JsonSubTypes.Type(name = "SapOdpResource", value = SapOdpResourceDataset.class),
     @JsonSubTypes.Type(name = "WebTable", value = WebTableDataset.class),
     @JsonSubTypes.Type(name = "AzureSearchIndex", value = AzureSearchIndexDataset.class),
     @JsonSubTypes.Type(name = "HttpFile", value = HttpDataset.class),
@@ -127,8 +128,6 @@ import java.util.Map;
 })
 @Fluent
 public class Dataset {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(Dataset.class);
-
     /*
      * Dataset description.
      */
@@ -366,7 +365,7 @@ public class Dataset {
      */
     public void validate() {
         if (linkedServiceName() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException("Missing required property linkedServiceName in model Dataset"));
         } else {
@@ -386,4 +385,6 @@ public class Dataset {
             folder().validate();
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(Dataset.class);
 }

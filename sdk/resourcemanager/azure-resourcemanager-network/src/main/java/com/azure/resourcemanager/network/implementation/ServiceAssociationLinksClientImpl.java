@@ -21,15 +21,12 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.ServiceAssociationLinksClient;
 import com.azure.resourcemanager.network.fluent.models.ServiceAssociationLinksListResultInner;
 import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in ServiceAssociationLinksClient. */
 public final class ServiceAssociationLinksClientImpl implements ServiceAssociationLinksClient {
-    private final ClientLogger logger = new ClientLogger(ServiceAssociationLinksClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ServiceAssociationLinksService service;
 
@@ -110,7 +107,7 @@ public final class ServiceAssociationLinksClientImpl implements ServiceAssociati
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -167,7 +164,7 @@ public final class ServiceAssociationLinksClientImpl implements ServiceAssociati
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -197,14 +194,7 @@ public final class ServiceAssociationLinksClientImpl implements ServiceAssociati
     public Mono<ServiceAssociationLinksListResultInner> listAsync(
         String resourceGroupName, String virtualNetworkName, String subnetName) {
         return listWithResponseAsync(resourceGroupName, virtualNetworkName, subnetName)
-            .flatMap(
-                (Response<ServiceAssociationLinksListResultInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

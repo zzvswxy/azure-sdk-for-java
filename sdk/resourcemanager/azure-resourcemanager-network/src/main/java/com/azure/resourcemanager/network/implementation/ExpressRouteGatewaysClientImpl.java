@@ -26,7 +26,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.network.fluent.ExpressRouteGatewaysClient;
@@ -42,8 +41,6 @@ import reactor.core.publisher.Mono;
 /** An instance of this class provides access to all the operations defined in ExpressRouteGatewaysClient. */
 public final class ExpressRouteGatewaysClientImpl
     implements InnerSupportsGet<ExpressRouteGatewayInner>, InnerSupportsDelete<Void>, ExpressRouteGatewaysClient {
-    private final ClientLogger logger = new ClientLogger(ExpressRouteGatewaysClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ExpressRouteGatewaysService service;
 
@@ -178,7 +175,7 @@ public final class ExpressRouteGatewaysClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -212,7 +209,7 @@ public final class ExpressRouteGatewaysClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -229,15 +226,7 @@ public final class ExpressRouteGatewaysClientImpl
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ExpressRouteGatewayListInner> listBySubscriptionAsync() {
-        return listBySubscriptionWithResponseAsync()
-            .flatMap(
-                (Response<ExpressRouteGatewayListInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return listBySubscriptionWithResponseAsync().flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -293,7 +282,7 @@ public final class ExpressRouteGatewaysClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -338,7 +327,7 @@ public final class ExpressRouteGatewaysClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -362,15 +351,7 @@ public final class ExpressRouteGatewaysClientImpl
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ExpressRouteGatewayListInner> listByResourceGroupAsync(String resourceGroupName) {
-        return listByResourceGroupWithResponseAsync(resourceGroupName)
-            .flatMap(
-                (Response<ExpressRouteGatewayListInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return listByResourceGroupWithResponseAsync(resourceGroupName).flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -448,7 +429,7 @@ public final class ExpressRouteGatewaysClientImpl
         } else {
             putExpressRouteGatewayParameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -513,7 +494,7 @@ public final class ExpressRouteGatewaysClientImpl
         } else {
             putExpressRouteGatewayParameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -763,7 +744,7 @@ public final class ExpressRouteGatewaysClientImpl
         } else {
             expressRouteGatewayParameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -828,7 +809,7 @@ public final class ExpressRouteGatewaysClientImpl
         } else {
             expressRouteGatewayParameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1056,7 +1037,7 @@ public final class ExpressRouteGatewaysClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1108,7 +1089,7 @@ public final class ExpressRouteGatewaysClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1136,14 +1117,7 @@ public final class ExpressRouteGatewaysClientImpl
     public Mono<ExpressRouteGatewayInner> getByResourceGroupAsync(
         String resourceGroupName, String expressRouteGatewayName) {
         return getByResourceGroupWithResponseAsync(resourceGroupName, expressRouteGatewayName)
-            .flatMap(
-                (Response<ExpressRouteGatewayInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1213,7 +1187,7 @@ public final class ExpressRouteGatewaysClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1266,7 +1240,7 @@ public final class ExpressRouteGatewaysClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service

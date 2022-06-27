@@ -24,7 +24,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.PrivateEndpointConnectionOperationsClient;
 import com.azure.resourcemanager.datafactory.fluent.models.PrivateEndpointConnectionResourceInner;
 import com.azure.resourcemanager.datafactory.models.PrivateLinkConnectionApprovalRequestResource;
@@ -34,8 +33,6 @@ import reactor.core.publisher.Mono;
  * An instance of this class provides access to all the operations defined in PrivateEndpointConnectionOperationsClient.
  */
 public final class PrivateEndpointConnectionOperationsClientImpl implements PrivateEndpointConnectionOperationsClient {
-    private final ClientLogger logger = new ClientLogger(PrivateEndpointConnectionOperationsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final PrivateEndpointConnectionOperationsService service;
 
@@ -284,14 +281,7 @@ public final class PrivateEndpointConnectionOperationsClientImpl implements Priv
         String ifMatch) {
         return createOrUpdateWithResponseAsync(
                 resourceGroupName, factoryName, privateEndpointConnectionName, privateEndpointWrapper, ifMatch)
-            .flatMap(
-                (Response<PrivateEndpointConnectionResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -315,14 +305,7 @@ public final class PrivateEndpointConnectionOperationsClientImpl implements Priv
         final String ifMatch = null;
         return createOrUpdateWithResponseAsync(
                 resourceGroupName, factoryName, privateEndpointConnectionName, privateEndpointWrapper, ifMatch)
-            .flatMap(
-                (Response<PrivateEndpointConnectionResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -514,14 +497,7 @@ public final class PrivateEndpointConnectionOperationsClientImpl implements Priv
     private Mono<PrivateEndpointConnectionResourceInner> getAsync(
         String resourceGroupName, String factoryName, String privateEndpointConnectionName, String ifNoneMatch) {
         return getWithResponseAsync(resourceGroupName, factoryName, privateEndpointConnectionName, ifNoneMatch)
-            .flatMap(
-                (Response<PrivateEndpointConnectionResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -540,14 +516,7 @@ public final class PrivateEndpointConnectionOperationsClientImpl implements Priv
         String resourceGroupName, String factoryName, String privateEndpointConnectionName) {
         final String ifNoneMatch = null;
         return getWithResponseAsync(resourceGroupName, factoryName, privateEndpointConnectionName, ifNoneMatch)
-            .flatMap(
-                (Response<PrivateEndpointConnectionResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -717,7 +686,7 @@ public final class PrivateEndpointConnectionOperationsClientImpl implements Priv
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String factoryName, String privateEndpointConnectionName) {
         return deleteWithResponseAsync(resourceGroupName, factoryName, privateEndpointConnectionName)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**

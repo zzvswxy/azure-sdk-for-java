@@ -25,7 +25,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.LoadBalancerProbesClient;
 import com.azure.resourcemanager.network.fluent.models.ProbeInner;
 import com.azure.resourcemanager.network.models.LoadBalancerProbeListResult;
@@ -33,8 +32,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in LoadBalancerProbesClient. */
 public final class LoadBalancerProbesClientImpl implements LoadBalancerProbesClient {
-    private final ClientLogger logger = new ClientLogger(LoadBalancerProbesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final LoadBalancerProbesService service;
 
@@ -133,7 +130,7 @@ public final class LoadBalancerProbesClientImpl implements LoadBalancerProbesCli
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -193,7 +190,7 @@ public final class LoadBalancerProbesClientImpl implements LoadBalancerProbesCli
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -319,7 +316,7 @@ public final class LoadBalancerProbesClientImpl implements LoadBalancerProbesCli
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -375,7 +372,7 @@ public final class LoadBalancerProbesClientImpl implements LoadBalancerProbesCli
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -404,14 +401,7 @@ public final class LoadBalancerProbesClientImpl implements LoadBalancerProbesCli
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ProbeInner> getAsync(String resourceGroupName, String loadBalancerName, String probeName) {
         return getWithResponseAsync(resourceGroupName, loadBalancerName, probeName)
-            .flatMap(
-                (Response<ProbeInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

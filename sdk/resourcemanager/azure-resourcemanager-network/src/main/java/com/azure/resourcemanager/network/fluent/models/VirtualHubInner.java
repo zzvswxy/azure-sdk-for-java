@@ -7,12 +7,11 @@ package com.azure.resourcemanager.network.fluent.models;
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
+import com.azure.resourcemanager.network.models.HubRoutingPreference;
 import com.azure.resourcemanager.network.models.PreferredRoutingGateway;
 import com.azure.resourcemanager.network.models.ProvisioningState;
 import com.azure.resourcemanager.network.models.RoutingState;
 import com.azure.resourcemanager.network.models.VirtualHubRouteTable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +19,6 @@ import java.util.Map;
 /** VirtualHub Resource. */
 @Fluent
 public final class VirtualHubInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VirtualHubInner.class);
-
     /*
      * Properties of the virtual hub.
      */
@@ -489,6 +486,29 @@ public final class VirtualHubInner extends Resource {
             this.innerProperties = new VirtualHubProperties();
         }
         this.innerProperties().withPreferredRoutingGateway(preferredRoutingGateway);
+        return this;
+    }
+
+    /**
+     * Get the hubRoutingPreference property: The hubRoutingPreference of this VirtualHub.
+     *
+     * @return the hubRoutingPreference value.
+     */
+    public HubRoutingPreference hubRoutingPreference() {
+        return this.innerProperties() == null ? null : this.innerProperties().hubRoutingPreference();
+    }
+
+    /**
+     * Set the hubRoutingPreference property: The hubRoutingPreference of this VirtualHub.
+     *
+     * @param hubRoutingPreference the hubRoutingPreference value to set.
+     * @return the VirtualHubInner object itself.
+     */
+    public VirtualHubInner withHubRoutingPreference(HubRoutingPreference hubRoutingPreference) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new VirtualHubProperties();
+        }
+        this.innerProperties().withHubRoutingPreference(hubRoutingPreference);
         return this;
     }
 

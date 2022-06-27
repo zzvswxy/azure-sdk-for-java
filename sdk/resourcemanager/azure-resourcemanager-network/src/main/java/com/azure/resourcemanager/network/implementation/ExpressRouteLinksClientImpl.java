@@ -25,7 +25,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.ExpressRouteLinksClient;
 import com.azure.resourcemanager.network.fluent.models.ExpressRouteLinkInner;
 import com.azure.resourcemanager.network.models.ExpressRouteLinkListResult;
@@ -33,8 +32,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in ExpressRouteLinksClient. */
 public final class ExpressRouteLinksClientImpl implements ExpressRouteLinksClient {
-    private final ClientLogger logger = new ClientLogger(ExpressRouteLinksClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ExpressRouteLinksService service;
 
@@ -138,7 +135,7 @@ public final class ExpressRouteLinksClientImpl implements ExpressRouteLinksClien
         if (linkName == null) {
             return Mono.error(new IllegalArgumentException("Parameter linkName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -194,7 +191,7 @@ public final class ExpressRouteLinksClientImpl implements ExpressRouteLinksClien
         if (linkName == null) {
             return Mono.error(new IllegalArgumentException("Parameter linkName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -224,14 +221,7 @@ public final class ExpressRouteLinksClientImpl implements ExpressRouteLinksClien
     public Mono<ExpressRouteLinkInner> getAsync(
         String resourceGroupName, String expressRoutePortName, String linkName) {
         return getWithResponseAsync(resourceGroupName, expressRoutePortName, linkName)
-            .flatMap(
-                (Response<ExpressRouteLinkInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -301,7 +291,7 @@ public final class ExpressRouteLinksClientImpl implements ExpressRouteLinksClien
             return Mono
                 .error(new IllegalArgumentException("Parameter expressRoutePortName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -361,7 +351,7 @@ public final class ExpressRouteLinksClientImpl implements ExpressRouteLinksClien
             return Mono
                 .error(new IllegalArgumentException("Parameter expressRoutePortName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service

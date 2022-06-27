@@ -31,7 +31,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.network.fluent.NetworkInterfacesClient;
@@ -45,9 +44,10 @@ import com.azure.resourcemanager.network.models.TagsObject;
 import com.azure.resourcemanager.resources.fluentcore.collection.InnerSupportsDelete;
 import com.azure.resourcemanager.resources.fluentcore.collection.InnerSupportsGet;
 import com.azure.resourcemanager.resources.fluentcore.collection.InnerSupportsListing;
-import java.nio.ByteBuffer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.nio.ByteBuffer;
 
 /** An instance of this class provides access to all the operations defined in NetworkInterfacesClient. */
 public final class NetworkInterfacesClientImpl
@@ -55,8 +55,6 @@ public final class NetworkInterfacesClientImpl
         InnerSupportsListing<NetworkInterfaceInner>,
         InnerSupportsDelete<Void>,
         NetworkInterfacesClient {
-    private final ClientLogger logger = new ClientLogger(NetworkInterfacesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final NetworkInterfacesService service;
 
@@ -449,7 +447,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -516,7 +514,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -659,7 +657,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -720,7 +718,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -863,7 +861,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -934,7 +932,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -973,14 +971,7 @@ public final class NetworkInterfacesClientImpl
         String expand) {
         return getCloudServiceNetworkInterfaceWithResponseAsync(
                 resourceGroupName, cloudServiceName, roleInstanceName, networkInterfaceName, expand)
-            .flatMap(
-                (Response<NetworkInterfaceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1001,14 +992,7 @@ public final class NetworkInterfacesClientImpl
         final String expand = null;
         return getCloudServiceNetworkInterfaceWithResponseAsync(
                 resourceGroupName, cloudServiceName, roleInstanceName, networkInterfaceName, expand)
-            .flatMap(
-                (Response<NetworkInterfaceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1092,7 +1076,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1143,7 +1127,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1329,7 +1313,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1383,7 +1367,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1413,14 +1397,7 @@ public final class NetworkInterfacesClientImpl
     public Mono<NetworkInterfaceInner> getByResourceGroupAsync(
         String resourceGroupName, String networkInterfaceName, String expand) {
         return getByResourceGroupWithResponseAsync(resourceGroupName, networkInterfaceName, expand)
-            .flatMap(
-                (Response<NetworkInterfaceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1437,14 +1414,7 @@ public final class NetworkInterfacesClientImpl
     public Mono<NetworkInterfaceInner> getByResourceGroupAsync(String resourceGroupName, String networkInterfaceName) {
         final String expand = null;
         return getByResourceGroupWithResponseAsync(resourceGroupName, networkInterfaceName, expand)
-            .flatMap(
-                (Response<NetworkInterfaceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1521,7 +1491,7 @@ public final class NetworkInterfacesClientImpl
         } else {
             parameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1580,7 +1550,7 @@ public final class NetworkInterfacesClientImpl
         } else {
             parameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1794,7 +1764,7 @@ public final class NetworkInterfacesClientImpl
         } else {
             parameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1853,7 +1823,7 @@ public final class NetworkInterfacesClientImpl
         } else {
             parameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1883,14 +1853,7 @@ public final class NetworkInterfacesClientImpl
     public Mono<NetworkInterfaceInner> updateTagsAsync(
         String resourceGroupName, String networkInterfaceName, TagsObject parameters) {
         return updateTagsWithResponseAsync(resourceGroupName, networkInterfaceName, parameters)
-            .flatMap(
-                (Response<NetworkInterfaceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1950,7 +1913,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1993,7 +1956,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -2090,7 +2053,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -2145,7 +2108,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -2262,7 +2225,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -2314,7 +2277,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -2516,7 +2479,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -2568,7 +2531,7 @@ public final class NetworkInterfacesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -3325,14 +3288,7 @@ public final class NetworkInterfacesClientImpl
         String expand) {
         return getVirtualMachineScaleSetNetworkInterfaceWithResponseAsync(
                 resourceGroupName, virtualMachineScaleSetName, virtualmachineIndex, networkInterfaceName, expand)
-            .flatMap(
-                (Response<NetworkInterfaceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -3356,14 +3312,7 @@ public final class NetworkInterfacesClientImpl
         final String expand = null;
         return getVirtualMachineScaleSetNetworkInterfaceWithResponseAsync(
                 resourceGroupName, virtualMachineScaleSetName, virtualmachineIndex, networkInterfaceName, expand)
-            .flatMap(
-                (Response<NetworkInterfaceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -3918,14 +3867,7 @@ public final class NetworkInterfacesClientImpl
                 networkInterfaceName,
                 ipConfigurationName,
                 expand)
-            .flatMap(
-                (Response<NetworkInterfaceIpConfigurationInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -3957,14 +3899,7 @@ public final class NetworkInterfacesClientImpl
                 networkInterfaceName,
                 ipConfigurationName,
                 expand)
-            .flatMap(
-                (Response<NetworkInterfaceIpConfigurationInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

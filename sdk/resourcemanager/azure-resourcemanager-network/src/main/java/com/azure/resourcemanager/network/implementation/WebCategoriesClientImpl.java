@@ -25,7 +25,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.WebCategoriesClient;
 import com.azure.resourcemanager.network.fluent.models.AzureWebCategoryInner;
 import com.azure.resourcemanager.network.models.AzureWebCategoryListResult;
@@ -33,8 +32,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in WebCategoriesClient. */
 public final class WebCategoriesClientImpl implements WebCategoriesClient {
-    private final ClientLogger logger = new ClientLogger(WebCategoriesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final WebCategoriesService service;
 
@@ -121,7 +118,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -166,7 +163,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -185,15 +182,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<AzureWebCategoryInner> getAsync(String name, String expand) {
-        return getWithResponseAsync(name, expand)
-            .flatMap(
-                (Response<AzureWebCategoryInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return getWithResponseAsync(name, expand).flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -208,15 +197,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<AzureWebCategoryInner> getAsync(String name) {
         final String expand = null;
-        return getWithResponseAsync(name, expand)
-            .flatMap(
-                (Response<AzureWebCategoryInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return getWithResponseAsync(name, expand).flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -272,7 +253,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -315,7 +296,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service

@@ -9,15 +9,12 @@ import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.ExpressRouteGatewayPropertiesAutoScaleConfiguration;
 import com.azure.resourcemanager.network.models.ProvisioningState;
 import com.azure.resourcemanager.network.models.VirtualHubId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** ExpressRoute gateway resource properties. */
 @Fluent
 public final class ExpressRouteGatewayProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ExpressRouteGatewayProperties.class);
-
     /*
      * Configuration for auto scaling.
      */
@@ -27,7 +24,7 @@ public final class ExpressRouteGatewayProperties {
     /*
      * List of ExpressRoute connections to the ExpressRoute gateway.
      */
-    @JsonProperty(value = "expressRouteConnections", access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(value = "expressRouteConnections")
     private List<ExpressRouteConnectionInner> expressRouteConnections;
 
     /*
@@ -73,6 +70,18 @@ public final class ExpressRouteGatewayProperties {
     }
 
     /**
+     * Set the expressRouteConnections property: List of ExpressRoute connections to the ExpressRoute gateway.
+     *
+     * @param expressRouteConnections the expressRouteConnections value to set.
+     * @return the ExpressRouteGatewayProperties object itself.
+     */
+    public ExpressRouteGatewayProperties withExpressRouteConnections(
+        List<ExpressRouteConnectionInner> expressRouteConnections) {
+        this.expressRouteConnections = expressRouteConnections;
+        return this;
+    }
+
+    /**
      * Get the provisioningState property: The provisioning state of the express route gateway resource.
      *
      * @return the provisioningState value.
@@ -114,7 +123,7 @@ public final class ExpressRouteGatewayProperties {
             expressRouteConnections().forEach(e -> e.validate());
         }
         if (virtualHub() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException(
                         "Missing required property virtualHub in model ExpressRouteGatewayProperties"));
@@ -122,4 +131,6 @@ public final class ExpressRouteGatewayProperties {
             virtualHub().validate();
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(ExpressRouteGatewayProperties.class);
 }

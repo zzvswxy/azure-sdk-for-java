@@ -6,11 +6,9 @@ package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.ExpressRouteGatewayPropertiesAutoScaleConfiguration;
 import com.azure.resourcemanager.network.models.ProvisioningState;
 import com.azure.resourcemanager.network.models.VirtualHubId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +16,6 @@ import java.util.Map;
 /** ExpressRoute gateway resource. */
 @Fluent
 public final class ExpressRouteGatewayInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ExpressRouteGatewayInner.class);
-
     /*
      * Properties of the express route gateway.
      */
@@ -121,6 +117,21 @@ public final class ExpressRouteGatewayInner extends Resource {
      */
     public List<ExpressRouteConnectionInner> expressRouteConnections() {
         return this.innerProperties() == null ? null : this.innerProperties().expressRouteConnections();
+    }
+
+    /**
+     * Set the expressRouteConnections property: List of ExpressRoute connections to the ExpressRoute gateway.
+     *
+     * @param expressRouteConnections the expressRouteConnections value to set.
+     * @return the ExpressRouteGatewayInner object itself.
+     */
+    public ExpressRouteGatewayInner withExpressRouteConnections(
+        List<ExpressRouteConnectionInner> expressRouteConnections) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new ExpressRouteGatewayProperties();
+        }
+        this.innerProperties().withExpressRouteConnections(expressRouteConnections);
+        return this;
     }
 
     /**
