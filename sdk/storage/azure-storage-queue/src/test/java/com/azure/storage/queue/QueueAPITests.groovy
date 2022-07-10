@@ -5,6 +5,7 @@ package com.azure.storage.queue
 
 import com.azure.core.util.BinaryData
 import com.azure.core.util.Context
+import com.azure.core.util.HttpClientOptions
 import com.azure.identity.DefaultAzureCredentialBuilder
 import com.azure.storage.common.StorageSharedKeyCredential
 import com.azure.storage.queue.models.PeekedMessageItem
@@ -64,6 +65,55 @@ class QueueAPITests extends APISpec {
         QueueTestHelper.assertResponseStatusCode(queueClient.createWithResponse(null, null, null), 201)
     }
 
+    def "Create if not exists queue with shared key"() {
+        expect:
+        QueueTestHelper.assertResponseStatusCode(queueClient.createIfNotExistsWithResponse(null, null, null), 201)
+    }
+
+    def "Create if not exists min"() {
+        setup:
+        queueName = namer.getRandomName(60)
+        def client = primaryQueueServiceClient.getQueueClient(queueName)
+
+        when:
+        def result = client.createIfNotExists()
+
+        then:
+        client.getQueueName() == queueName
+        client.getProperties() != null
+        result
+    }
+
+    def "Create if not exists with same metadata on a queue client that already exists"() {
+        setup:
+        queueName = namer.getRandomName(60)
+        def client = primaryQueueServiceClient.getQueueClient(queueName)
+        def initialResponse = client.createIfNotExistsWithResponse(null, null, null)
+
+        when:
+        def secondResponse = client.createIfNotExistsWithResponse(null, null, null)
+
+        then:
+        initialResponse.getStatusCode() == 201
+        secondResponse.getStatusCode() == 204
+    }
+
+    def "Create if not exists with conflicting metadata on a queue client that already exists"() {
+        setup:
+        queueName = namer.getRandomName(60)
+        def client = primaryQueueServiceClient.getQueueClient(queueName)
+        def initialResponse = client.createIfNotExistsWithResponse(testMetadata, null, null)
+
+        when:
+        def secondResponse = client.createIfNotExistsWithResponse(null, null, null)
+
+        then:
+        initialResponse.getStatusCode() == 201
+        secondResponse.getStatusCode() == 409
+        initialResponse.getValue()
+        !secondResponse.getValue()
+    }
+
     def "Delete exist queue"() {
         given:
         queueClient.create()
@@ -80,6 +130,42 @@ class QueueAPITests extends APISpec {
         then:
         def e = thrown(QueueStorageException)
         QueueTestHelper.assertExceptionStatusCodeAndMessage(e, 404, QueueErrorCode.QUEUE_NOT_FOUND)
+    }
+
+    def "Delete if exists min"() {
+        setup:
+        queueClient.create()
+
+        when:
+        def result = queueClient.deleteIfExists()
+
+        then:
+        result
+    }
+
+    def "Delete if exists queue"() {
+        given:
+        queueClient.create()
+        when:
+        def deleteQueueResponse = queueClient.deleteIfExistsWithResponse(null, null)
+        then:
+        QueueTestHelper.assertResponseStatusCode(deleteQueueResponse, 204)
+
+    }
+
+    def "Delete if exists with response on a queue client that does not exist"() {
+        setup:
+        queueName = namer.getRandomName(60)
+        def client = primaryQueueServiceClient.getQueueClient(queueName)
+
+        when:
+        def response = client.deleteIfExistsWithResponse(null, null)
+        client.getProperties()
+
+        then:
+        thrown(QueueStorageException)
+        response.getStatusCode() == 404
+        !response.getValue()
     }
 
     def "Get properties"() {
@@ -806,4 +892,29 @@ class QueueAPITests extends APISpec {
         notThrown(QueueStorageException)
         response.getHeaders().getValue("x-ms-version") == "2017-11-09"
     }
+
+    def "create queue with small timeouts fail for service client"() {
+        setup:
+        def clientOptions = new HttpClientOptions()
+            .setApplicationId("client-options-id")
+            .setResponseTimeout(Duration.ofNanos(1))
+            .setReadTimeout(Duration.ofNanos(1))
+            .setWriteTimeout(Duration.ofNanos(1))
+            .setConnectTimeout(Duration.ofNanos(1))
+
+        def clientBuilder = new QueueServiceClientBuilder()
+            .endpoint(environment.primaryAccount.blobEndpoint)
+            .credential(environment.primaryAccount.credential)
+            .clientOptions(clientOptions)
+
+        def serviceClient = clientBuilder.buildClient()
+
+        when:
+        serviceClient.createQueueWithResponse(namer.getRandomName(60), null, Duration.ofSeconds(10), null)
+
+        then:
+        // test whether failure occurs due to small timeout intervals set on the service client
+        thrown(RuntimeException)
+    }
+
 }

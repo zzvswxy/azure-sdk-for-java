@@ -1,6 +1,6 @@
 # Release History
 
-## 4.11.0-beta.1 (Unreleased)
+## 4.13.0-beta.1 (Unreleased)
 
 ### Features Added
 
@@ -9,6 +9,55 @@
 ### Bugs Fixed
 
 ### Other Changes
+
+## 4.12.0 (2022-07-08)
+
+### Features Added
+- Added support to publish CloudEvents to partner topics by setting the channel name.
+
+### Other Changes
+
+#### Dependency Updates
+- Updated `azure-core` to `1.30.0`.
+- Updated `azure-core-http-netty` to `1.12.3`.
+
+## 4.11.2 (2022-06-09)
+
+### Other Changes
+
+#### Dependency Updates
+- Updated `azure-core` to `1.29.1`.
+- Updated `azure-core-http-netty` to `1.12.2`.
+
+## 4.12.0-beta.2 (2022-05-17)
+
+### Breaking Changes
+- Removed class `SendEventsOptions` and replaced it by the String `channelName`.
+
+## 4.11.1 (2022-05-16)
+
+### Other Changes
+
+#### Dependency Updates
+- Updated `azure-core` to `1.28.0`.
+- Updated `azure-core-http-netty` to `1.12.0`.
+
+## 4.12.0-beta.1 (2022-04-13)
+
+### Features Added
+- Added support to publish CloudEvents to partner topics by setting the channel name in `SendEventsOptions`.
+
+## 4.11.0 (2022-04-12)
+
+### Features Added
+- Added system event classes for Azure Healthcare FHIR Services under package `com.azure.messaging.eventgrid.systemevents`,
+  `HealthcareFhirResourceCreatedEventData`, `HealthcareFhirResourceDeletedEventData` and `HealthcareFhirResourceUpdatedEventData`.
+
+### Other Changes
+
+#### Dependency Updates
+- Updated `azure-core` to `1.27.0`.
+- Updated `azure-core-http-netty` to `1.11.9`.
 
 ## 4.10.0 (2022-03-10)
 

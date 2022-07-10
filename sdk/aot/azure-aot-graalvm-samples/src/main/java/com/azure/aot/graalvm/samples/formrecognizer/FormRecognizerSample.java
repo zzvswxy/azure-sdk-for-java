@@ -11,9 +11,9 @@ import com.azure.ai.formrecognizer.models.DocumentField;
 import com.azure.ai.formrecognizer.models.DocumentFieldType;
 import com.azure.ai.formrecognizer.models.DocumentOperationResult;
 import com.azure.core.credential.AzureKeyCredential;
+import com.azure.core.util.BinaryData;
 import com.azure.core.util.polling.SyncPoller;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +28,10 @@ public class FormRecognizerSample {
     private static final String AZURE_FORM_RECOGNIZER_ENDPOINT = System.getenv("AZURE_FORM_RECOGNIZER_ENDPOINT");
     private static final String AZURE_FORM_RECOGNIZER_KEY = System.getenv("AZURE_FORM_RECOGNIZER_KEY");
 
+    /**
+     * The method to run the formrecognizer sample.
+     * @throws IOException if the input image cannot be read.
+     */
     public static void runSample() throws IOException {
         System.out.println("\n================================================================");
         System.out.println(" Starting Form Recognizer Sample");
@@ -49,10 +53,10 @@ public class FormRecognizerSample {
         }
         byte[] fileContent = buffer.toByteArray();
 
-        InputStream targetStream = new ByteArrayInputStream(fileContent);
+        BinaryData targetData = BinaryData.fromStream(resourceAsStream);
 
         SyncPoller<DocumentOperationResult, AnalyzeResult> analyzeReceiptPoller =
-                client.beginAnalyzeDocument("prebuilt-receipt", targetStream, fileContent.length);
+                client.beginAnalyzeDocument("prebuilt-receipt", targetData, fileContent.length);
 
         AnalyzeResult receiptResults = analyzeReceiptPoller.getFinalResult();
 

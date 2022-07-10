@@ -283,11 +283,11 @@ Analyze layout using 4.x.x `beginAnalyzeDocument`:
 ```java readme-sample-extractLayout
 // analyze document layout using file input stream
 File layoutDocument = new File("local/file_path/filename.png");
-byte[] fileContent = Files.readAllBytes(layoutDocument.toPath());
-InputStream fileStream = new ByteArrayInputStream(fileContent);
+Path filePath = layoutDocument.toPath();
+BinaryData layoutDocumentData = BinaryData.fromFile(filePath);
 
 SyncPoller<DocumentOperationResult, AnalyzeResult> analyzeLayoutResultPoller =
-    documentAnalysisClient.beginAnalyzeDocument("prebuilt-layout", fileStream, layoutDocument.length());
+    documentAnalysisClient.beginAnalyzeDocument("prebuilt-layout", layoutDocumentData, layoutDocument.length());
 
 AnalyzeResult analyzeLayoutResult = analyzeLayoutResultPoller.getFinalResult();
 
@@ -302,13 +302,13 @@ analyzeLayoutResult.getPages().forEach(documentPage -> {
     documentPage.getLines().forEach(documentLine ->
         System.out.printf("Line '%s' is within a bounding box %s.%n",
             documentLine.getContent(),
-            documentLine.getBoundingBox().toString()));
+            documentLine.getBoundingPolygon().toString()));
 
     // selection marks
     documentPage.getSelectionMarks().forEach(documentSelectionMark ->
         System.out.printf("Selection mark is '%s' and is within a bounding box %s with confidence %.2f.%n",
             documentSelectionMark.getState().toString(),
-            documentSelectionMark.getBoundingBox().toString(),
+            documentSelectionMark.getBoundingPolygon().toString(),
             documentSelectionMark.getConfidence()));
 });
 
@@ -382,7 +382,7 @@ analyzeResult.getPages().forEach(documentPage -> {
     documentPage.getLines().forEach(documentLine ->
         System.out.printf("Line '%s' is within a bounding box %s.%n",
             documentLine.getContent(),
-            documentLine.getBoundingBox().toString()));
+            documentLine.getBoundingPolygon().toString()));
 
     // words
     documentPage.getWords().forEach(documentWord ->
@@ -433,7 +433,7 @@ analyzeResult.getPages().forEach(documentPage -> {
     documentPage.getLines().forEach(documentLine ->
         System.out.printf("Line '%s' is within a bounding box %s.%n",
             documentLine.getContent(),
-            documentLine.getBoundingBox().toString()));
+            documentLine.getBoundingPolygon().toString()));
 
     // words
     documentPage.getWords().forEach(documentWord ->
@@ -455,14 +455,6 @@ for (int i = 0; i < tables.size(); i++) {
     });
     System.out.println();
 }
-
-// Entities
-analyzeResult.getEntities().forEach(documentEntity -> {
-    System.out.printf("Entity category : %s, sub-category %s%n: ",
-        documentEntity.getCategory(), documentEntity.getSubCategory());
-    System.out.printf("Entity content: %s%n: ", documentEntity.getContent());
-    System.out.printf("Entity confidence: %.2f%n", documentEntity.getConfidence());
-});
 
 // Key-value
 analyzeResult.getKeyValuePairs().forEach(documentKeyValuePair -> {
@@ -530,18 +522,18 @@ Build a custom document model using 4.x.x `beginBuildModel`:
 // Build custom document analysis model
 String trainingFilesUrl = "{SAS_URL_of_your_container_in_blob_storage}";
 // The shared access signature (SAS) Url of your Azure Blob Storage container with your forms.
-SyncPoller<DocumentOperationResult, DocumentModel> buildOperationPoller =
+SyncPoller<DocumentOperationResult, DocumentModelInfo> buildOperationPoller =
     documentModelAdminClient.beginBuildModel(trainingFilesUrl,
-        DocumentBuildMode.TEMPLATE, "my-build-model",
-        new BuildModelOptions().setDescription("model desc"), Context.NONE);
+        DocumentBuildMode.TEMPLATE,
+        new BuildModelOptions().setModelId("my-build-model").setDescription("model desc"), Context.NONE);
 
-DocumentModel documentModel = buildOperationPoller.getFinalResult();
+DocumentModelInfo documentModelInfo = buildOperationPoller.getFinalResult();
 
 // Model Info
-System.out.printf("Model ID: %s%n", documentModel.getModelId());
-System.out.printf("Model Description: %s%n", documentModel.getDescription());
-System.out.printf("Model created on: %s%n%n", documentModel.getCreatedOn());
-documentModel.getDocTypes().forEach((key, docTypeInfo) -> {
+System.out.printf("Model ID: %s%n", documentModelInfo.getModelId());
+System.out.printf("Model Description: %s%n", documentModelInfo.getDescription());
+System.out.printf("Model created on: %s%n%n", documentModelInfo.getCreatedOn());
+documentModelInfo.getDocTypes().forEach((key, docTypeInfo) -> {
     System.out.printf("Document type: %s%n", key);
     docTypeInfo.getFieldSchema().forEach((name, documentFieldSchema) -> {
         System.out.printf("Document field: %s%n", name);

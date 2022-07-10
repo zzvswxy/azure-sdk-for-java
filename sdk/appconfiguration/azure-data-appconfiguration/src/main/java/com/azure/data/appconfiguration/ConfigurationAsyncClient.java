@@ -22,10 +22,13 @@ import com.azure.core.util.CoreUtils;
 import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.serializer.JacksonAdapter;
 import com.azure.core.util.serializer.SerializerAdapter;
+import com.azure.data.appconfiguration.implementation.ConfigurationService;
 import com.azure.data.appconfiguration.implementation.ConfigurationSettingJsonDeserializer;
 import com.azure.data.appconfiguration.implementation.ConfigurationSettingJsonSerializer;
 import com.azure.data.appconfiguration.implementation.SyncTokenPolicy;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.azure.data.appconfiguration.models.FeatureFlagConfigurationSetting;
+import com.azure.data.appconfiguration.models.SecretReferenceConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingFields;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import org.reactivestreams.Publisher;
@@ -141,6 +144,9 @@ public final class ConfigurationAsyncClient {
      * Adds a configuration value in the service if that key and label does not exist. The label value of the
      * ConfigurationSetting is optional.
      *
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
+     *
      * <p><strong>Code Samples</strong></p>
      *
      * <p>Add a setting with the key "prodDBConnection", label "westUS", and value "db_connection".</p>
@@ -172,6 +178,9 @@ public final class ConfigurationAsyncClient {
     /**
      * Adds a configuration value in the service if that key and label does not exist. The label value of the
      * ConfigurationSetting is optional.
+     *
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
      *
      * <p><strong>Code Samples</strong></p>
      *
@@ -277,6 +286,9 @@ public final class ConfigurationAsyncClient {
      * Creates or updates a configuration value in the service. Partial updates are not supported and the entire
      * configuration setting is updated.
      *
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
+     *
      * <p><strong>Code Samples</strong></p>
      *
      * <p>Add a setting with the key "prodDBConnection", "westUS" and value "db_connection"</p>
@@ -313,6 +325,9 @@ public final class ConfigurationAsyncClient {
     /**
      * Creates or updates a configuration value in the service. Partial updates are not supported and the entire
      * configuration setting is updated.
+     *
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
      *
      * If {@link ConfigurationSetting#getETag() ETag} is specified, the configuration value is updated if the current
      * setting's ETag matches. If the ETag's value is equal to the wildcard character ({@code "*"}), the setting will
@@ -460,6 +475,8 @@ public final class ConfigurationAsyncClient {
     /**
      * Attempts to get the ConfigurationSetting with a matching {@link ConfigurationSetting#getKey() key}, and optional
      * {@link ConfigurationSetting#getLabel() label}, optional {@code acceptDateTime} and optional ETag combination.
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
      *
      * <p><strong>Code Samples</strong></p>
      *
@@ -491,6 +508,8 @@ public final class ConfigurationAsyncClient {
     /**
      * Attempts to get the ConfigurationSetting with a matching {@link ConfigurationSetting#getKey() key}, and optional
      * {@link ConfigurationSetting#getLabel() label}, optional {@code acceptDateTime} and optional ETag combination.
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
      *
      * <p><strong>Code Samples</strong></p>
      *
@@ -597,6 +616,8 @@ public final class ConfigurationAsyncClient {
     /**
      * Deletes the {@link ConfigurationSetting} with a matching {@link ConfigurationSetting#getKey() key}, and optional
      * {@link ConfigurationSetting#getLabel() label} and optional ETag combination from the service.
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
      *
      * If {@link ConfigurationSetting#getETag() ETag} is specified and is not the wildcard character ({@code "*"}), then
      * the setting is <b>only</b> deleted if the ETag matches the current ETag; this means that no one has updated the
@@ -634,6 +655,9 @@ public final class ConfigurationAsyncClient {
     /**
      * Deletes the {@link ConfigurationSetting} with a matching {@link ConfigurationSetting#getKey() key}, and optional
      * {@link ConfigurationSetting#getLabel() label} and optional ETag combination from the service.
+     *
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
      *
      * If {@link ConfigurationSetting#getETag() ETag} is specified and is not the wildcard character ({@code "*"}), then
      * the setting is <b>only</b> deleted if the ETag matches the current ETag; this means that no one has updated the
@@ -743,6 +767,9 @@ public final class ConfigurationAsyncClient {
     /**
      * Sets the read-only status for the {@link ConfigurationSetting}.
      *
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
+     *
      * <p><strong>Code Samples</strong></p>
      *
      * <p>Set the setting to read-only with the key-label "prodDBConnection"-"westUS".</p>
@@ -781,6 +808,9 @@ public final class ConfigurationAsyncClient {
 
     /**
      * Sets the read-only status for the {@link ConfigurationSetting}.
+     *
+     * For more configuration setting types, see {@link FeatureFlagConfigurationSetting} and
+     * {@link SecretReferenceConfigurationSetting}.
      *
      * <p><strong>Code Samples</strong></p>
      *
@@ -873,6 +903,7 @@ public final class ConfigurationAsyncClient {
      * @param selector Optional. Selector to filter configuration setting results from the service.
      * @return A Flux of ConfigurationSettings that matches the {@code selector}. If no options were provided, the Flux
      * contains all of the current settings in the service.
+     * @throws HttpResponseException If a client or service error occurs, such as a 404, 409, 429 or 500.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<ConfigurationSetting> listConfigurationSettings(SettingSelector selector) {
@@ -958,6 +989,7 @@ public final class ConfigurationAsyncClient {
      *
      * @param selector Optional. Used to filter configuration setting revisions from the service.
      * @return Revisions of the ConfigurationSetting
+     * @throws HttpResponseException If a client or service error occurs, such as a 404, 409, 429 or 500.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<ConfigurationSetting> listRevisions(SettingSelector selector) {

@@ -23,7 +23,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.datafactory.fluent.IntegrationRuntimeObjectMetadatasClient;
@@ -38,8 +37,6 @@ import reactor.core.publisher.Mono;
  * An instance of this class provides access to all the operations defined in IntegrationRuntimeObjectMetadatasClient.
  */
 public final class IntegrationRuntimeObjectMetadatasClientImpl implements IntegrationRuntimeObjectMetadatasClient {
-    private final ClientLogger logger = new ClientLogger(IntegrationRuntimeObjectMetadatasClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final IntegrationRuntimeObjectMetadatasService service;
 
@@ -520,14 +517,7 @@ public final class IntegrationRuntimeObjectMetadatasClientImpl implements Integr
         String integrationRuntimeName,
         GetSsisObjectMetadataRequest getMetadataRequest) {
         return getWithResponseAsync(resourceGroupName, factoryName, integrationRuntimeName, getMetadataRequest)
-            .flatMap(
-                (Response<SsisObjectMetadataListResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -546,14 +536,7 @@ public final class IntegrationRuntimeObjectMetadatasClientImpl implements Integr
         String resourceGroupName, String factoryName, String integrationRuntimeName) {
         final GetSsisObjectMetadataRequest getMetadataRequest = null;
         return getWithResponseAsync(resourceGroupName, factoryName, integrationRuntimeName, getMetadataRequest)
-            .flatMap(
-                (Response<SsisObjectMetadataListResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

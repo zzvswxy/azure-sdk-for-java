@@ -25,7 +25,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.LoadBalancerOutboundRulesClient;
 import com.azure.resourcemanager.network.fluent.models.OutboundRuleInner;
 import com.azure.resourcemanager.network.models.LoadBalancerOutboundRuleListResult;
@@ -33,8 +32,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in LoadBalancerOutboundRulesClient. */
 public final class LoadBalancerOutboundRulesClientImpl implements LoadBalancerOutboundRulesClient {
-    private final ClientLogger logger = new ClientLogger(LoadBalancerOutboundRulesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final LoadBalancerOutboundRulesService service;
 
@@ -137,7 +134,7 @@ public final class LoadBalancerOutboundRulesClientImpl implements LoadBalancerOu
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -198,7 +195,7 @@ public final class LoadBalancerOutboundRulesClientImpl implements LoadBalancerOu
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -326,7 +323,7 @@ public final class LoadBalancerOutboundRulesClientImpl implements LoadBalancerOu
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -384,7 +381,7 @@ public final class LoadBalancerOutboundRulesClientImpl implements LoadBalancerOu
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -414,14 +411,7 @@ public final class LoadBalancerOutboundRulesClientImpl implements LoadBalancerOu
     public Mono<OutboundRuleInner> getAsync(
         String resourceGroupName, String loadBalancerName, String outboundRuleName) {
         return getWithResponseAsync(resourceGroupName, loadBalancerName, outboundRuleName)
-            .flatMap(
-                (Response<OutboundRuleInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

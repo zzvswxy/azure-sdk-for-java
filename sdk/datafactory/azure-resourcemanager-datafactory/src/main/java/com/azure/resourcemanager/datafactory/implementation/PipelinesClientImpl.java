@@ -29,7 +29,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.PipelinesClient;
 import com.azure.resourcemanager.datafactory.fluent.models.CreateRunResponseInner;
 import com.azure.resourcemanager.datafactory.fluent.models.PipelineResourceInner;
@@ -39,8 +38,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in PipelinesClient. */
 public final class PipelinesClientImpl implements PipelinesClient {
-    private final ClientLogger logger = new ClientLogger(PipelinesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final PipelinesService service;
 
@@ -498,14 +495,7 @@ public final class PipelinesClientImpl implements PipelinesClient {
         PipelineResourceInner pipeline,
         String ifMatch) {
         return createOrUpdateWithResponseAsync(resourceGroupName, factoryName, pipelineName, pipeline, ifMatch)
-            .flatMap(
-                (Response<PipelineResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -525,14 +515,7 @@ public final class PipelinesClientImpl implements PipelinesClient {
         String resourceGroupName, String factoryName, String pipelineName, PipelineResourceInner pipeline) {
         final String ifMatch = null;
         return createOrUpdateWithResponseAsync(resourceGroupName, factoryName, pipelineName, pipeline, ifMatch)
-            .flatMap(
-                (Response<PipelineResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -708,14 +691,7 @@ public final class PipelinesClientImpl implements PipelinesClient {
     private Mono<PipelineResourceInner> getAsync(
         String resourceGroupName, String factoryName, String pipelineName, String ifNoneMatch) {
         return getWithResponseAsync(resourceGroupName, factoryName, pipelineName, ifNoneMatch)
-            .flatMap(
-                (Response<PipelineResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -733,14 +709,7 @@ public final class PipelinesClientImpl implements PipelinesClient {
     private Mono<PipelineResourceInner> getAsync(String resourceGroupName, String factoryName, String pipelineName) {
         final String ifNoneMatch = null;
         return getWithResponseAsync(resourceGroupName, factoryName, pipelineName, ifNoneMatch)
-            .flatMap(
-                (Response<PipelineResourceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -897,8 +866,7 @@ public final class PipelinesClientImpl implements PipelinesClient {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String factoryName, String pipelineName) {
-        return deleteWithResponseAsync(resourceGroupName, factoryName, pipelineName)
-            .flatMap((Response<Void> res) -> Mono.empty());
+        return deleteWithResponseAsync(resourceGroupName, factoryName, pipelineName).flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -1123,14 +1091,7 @@ public final class PipelinesClientImpl implements PipelinesClient {
                 startActivityName,
                 startFromFailure,
                 parameters)
-            .flatMap(
-                (Response<CreateRunResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1161,14 +1122,7 @@ public final class PipelinesClientImpl implements PipelinesClient {
                 startActivityName,
                 startFromFailure,
                 parameters)
-            .flatMap(
-                (Response<CreateRunResponseInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

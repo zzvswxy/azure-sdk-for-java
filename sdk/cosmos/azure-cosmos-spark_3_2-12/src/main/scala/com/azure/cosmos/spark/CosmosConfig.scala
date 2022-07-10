@@ -13,6 +13,7 @@ import com.azure.cosmos.spark.CosmosPredicates.{assertNotNullOrEmpty, requireNot
 import com.azure.cosmos.spark.ItemWriteStrategy.{ItemWriteStrategy, values}
 import com.azure.cosmos.spark.PartitioningStrategies.PartitioningStrategy
 import com.azure.cosmos.spark.SchemaConversionModes.SchemaConversionMode
+import com.azure.cosmos.spark.SerializationDateTimeConversionModes.SerializationDateTimeConversionMode
 import com.azure.cosmos.spark.SerializationInclusionModes.SerializationInclusionMode
 import com.azure.cosmos.spark.diagnostics.{DiagnosticsProvider, FeedDiagnosticsProvider, SimpleDiagnosticsProvider}
 import org.apache.spark.SparkConf
@@ -44,6 +45,7 @@ private[spark] object CosmosConfigNames {
   val Container = "spark.cosmos.container"
   val PreferredRegionsList = "spark.cosmos.preferredRegionsList"
   val PreferredRegions = "spark.cosmos.preferredRegions"
+  val DisableTcpConnectionEndpointRediscovery = "spark.cosmos.disableTcpConnectionEndpointRediscovery"
   val ApplicationName = "spark.cosmos.applicationName"
   val UseGatewayMode = "spark.cosmos.useGatewayMode"
   val ReadCustomQuery = "spark.cosmos.read.customQuery"
@@ -76,6 +78,7 @@ private[spark] object CosmosConfigNames {
   val ChangeFeedStartFrom = "spark.cosmos.changeFeed.startFrom"
   val ChangeFeedMode = "spark.cosmos.changeFeed.mode"
   val ChangeFeedItemCountPerTriggerHint = "spark.cosmos.changeFeed.itemCountPerTriggerHint"
+  val ChangeFeedBatchCheckpointLocation = "spark.cosmos.changeFeed.batchCheckpointLocation"
   val ThroughputControlEnabled = "spark.cosmos.throughputControl.enabled"
   val ThroughputControlName = "spark.cosmos.throughputControl.name"
   val ThroughputControlTargetThroughput = "spark.cosmos.throughputControl.targetThroughput"
@@ -88,6 +91,8 @@ private[spark] object CosmosConfigNames {
     "spark.cosmos.throughputControl.globalControl.expireIntervalInMS"
   val SerializationInclusionMode =
     "spark.cosmos.serialization.inclusionMode"
+  val SerializationDateTimeConversionMode =
+    "spark.cosmos.serialization.dateTimeConversionMode"
 
   private val cosmosPrefix = "spark.cosmos."
 
@@ -98,6 +103,7 @@ private[spark] object CosmosConfigNames {
     Container,
     PreferredRegionsList,
     PreferredRegions,
+    DisableTcpConnectionEndpointRediscovery,
     ApplicationName,
     UseGatewayMode,
     ReadCustomQuery,
@@ -130,6 +136,7 @@ private[spark] object CosmosConfigNames {
     ChangeFeedStartFrom,
     ChangeFeedMode,
     ChangeFeedItemCountPerTriggerHint,
+    ChangeFeedBatchCheckpointLocation,
     ThroughputControlEnabled,
     ThroughputControlName,
     ThroughputControlTargetThroughput,
@@ -138,7 +145,8 @@ private[spark] object CosmosConfigNames {
     ThroughputControlGlobalControlContainer,
     ThroughputControlGlobalControlRenewalIntervalInMS,
     ThroughputControlGlobalControlExpireIntervalInMS,
-    SerializationInclusionMode
+    SerializationInclusionMode,
+    SerializationDateTimeConversionMode
   )
 
   def validateConfigName(name: String): Unit = {
@@ -236,9 +244,9 @@ private object CosmosConfig {
 private case class CosmosAccountConfig(endpoint: String,
                                        key: String,
                                        accountName: String,
-                                       applicationName:
-                                       Option[String],
+                                       applicationName: Option[String],
                                        useGatewayMode: Boolean,
+                                       disableTcpConnectionEndpointRediscovery: Boolean,
                                        preferredRegionsList: Option[Array[String]])
 
 private object CosmosAccountConfig {
@@ -307,12 +315,23 @@ private object CosmosAccountConfig {
     parseFromStringFunction = useGatewayMode => useGatewayMode.toBoolean,
     helpMessage = "Use gateway mode for the client operations")
 
+  private val DisableTcpConnectionEndpointRediscovery =
+    CosmosConfigEntry[Boolean](
+      key = CosmosConfigNames.DisableTcpConnectionEndpointRediscovery,
+      mandatory = false,
+      defaultValue = Some(false),
+      parseFromStringFunction = disableEndpointRediscovery => disableEndpointRediscovery.toBoolean,
+      helpMessage = "Disables TCP connection endpoint rediscovery. TCP connection endpoint " +
+        "rediscovery should only be disabled when using custom domain names with private endpoints"
+    )
+
   def parseCosmosAccountConfig(cfg: Map[String, String]): CosmosAccountConfig = {
     val endpointOpt = CosmosConfigEntry.parse(cfg, CosmosAccountEndpointUri)
     val key = CosmosConfigEntry.parse(cfg, CosmosKey)
     val accountName = CosmosConfigEntry.parse(cfg, CosmosAccountName)
     val applicationName = CosmosConfigEntry.parse(cfg, ApplicationName)
     val useGatewayMode = CosmosConfigEntry.parse(cfg, UseGatewayMode)
+    val disableTcpConnectionEndpointRediscovery = CosmosConfigEntry.parse(cfg, DisableTcpConnectionEndpointRediscovery)
     val preferredRegionsListOpt = CosmosConfigEntry.parse(cfg, PreferredRegionsList)
 
     // parsing above already validated these assertions
@@ -341,7 +360,14 @@ private object CosmosAccountConfig {
       })
     }
 
-    CosmosAccountConfig(endpointOpt.get, key.get, accountName.get, applicationName, useGatewayMode.get, preferredRegionsListOpt)
+    CosmosAccountConfig(
+      endpointOpt.get,
+      key.get,
+      accountName.get,
+      applicationName,
+      useGatewayMode.get,
+      disableTcpConnectionEndpointRediscovery.get,
+      preferredRegionsListOpt)
   }
 }
 
@@ -782,7 +808,18 @@ private object SerializationInclusionModes extends Enumeration {
   val NonDefault: SerializationInclusionModes.Value = Value("NonDefault")
 }
 
-private case class CosmosSerializationConfig(serializationInclusionMode: SerializationInclusionMode)
+private object SerializationDateTimeConversionModes extends Enumeration {
+  type SerializationDateTimeConversionMode = Value
+
+  val Default: SerializationDateTimeConversionModes.Value = Value("Default")
+  val AlwaysEpochMilliseconds: SerializationDateTimeConversionModes.Value = Value("AlwaysEpochMilliseconds")
+}
+
+private case class CosmosSerializationConfig
+(
+  serializationInclusionMode: SerializationInclusionMode,
+  serializationDateTimeConversionMode: SerializationDateTimeConversionMode
+)
 
 private object CosmosSerializationConfig {
   private val inclusionMode = CosmosConfigEntry[SerializationInclusionMode](
@@ -794,14 +831,29 @@ private object CosmosSerializationConfig {
       " When serializing json documents this setting determines whether json properties will be emitted" +
       " for columns in the RDD that are null/empty. The default value is `Always`.")
 
+  private val dateTimeConversionMode = CosmosConfigEntry[SerializationDateTimeConversionMode](
+    key = CosmosConfigNames.SerializationDateTimeConversionMode,
+    mandatory = false,
+    defaultValue = Some(SerializationDateTimeConversionModes.Default),
+    parseFromStringFunction = value => CosmosConfigEntry.parseEnumeration(value, SerializationDateTimeConversionModes),
+    helpMessage = "The date/time conversion mode (`Default`, `AlwaysEpochMilliseconds`). " +
+      "With `Default` the standard Spark 3.* behavior is used (`java.sql.Date`/`java.time.LocalDate` are converted " +
+      "to EpochDay, `java.sql.Timestamp`/`java.time.Instant` are converted to MicrosecondsFromEpoch). With " +
+      "`AlwaysEpochMilliseconds` the same behavior the Cosmos DB connector for Spark 2.4 used is applied - " +
+      "`java.sql.Date`, `java.time.LocalDate`, `java.sql.Timestamp` and `java.time.Instant` are converted " +
+      "to MillisecondsFromEpoch.")
+
   def parseSerializationConfig(cfg: Map[String, String]): CosmosSerializationConfig = {
     val inclusionModeOpt = CosmosConfigEntry.parse(cfg, inclusionMode)
+    val dateTimeConversionModeOpt = CosmosConfigEntry.parse(cfg, dateTimeConversionMode)
 
     // parsing above already validated this
     assert(inclusionModeOpt.isDefined)
+    assert(dateTimeConversionModeOpt.isDefined)
 
     CosmosSerializationConfig(
-      serializationInclusionMode = inclusionModeOpt.get
+      serializationInclusionMode = inclusionModeOpt.get,
+      serializationDateTimeConversionMode = dateTimeConversionModeOpt.get
     )
   }
 }
@@ -1004,7 +1056,8 @@ private case class CosmosChangeFeedConfig
   changeFeedMode: ChangeFeedMode,
   startFrom: ChangeFeedStartFromMode,
   startFromPointInTime: Option[Instant],
-  maxItemCountPerTrigger: Option[Long]
+  maxItemCountPerTrigger: Option[Long],
+  batchCheckpointLocation: Option[String]
 ) {
 
   def toRequestOptions(feedRange: FeedRange): CosmosChangeFeedRequestOptions = {
@@ -1066,6 +1119,16 @@ private object CosmosChangeFeedConfig {
     parseFromStringFunction = maxItemCount => maxItemCount.toInt,
     helpMessage = "Approximate maximum number of items read from change feed for each trigger")
 
+  private val batchCheckpointLocation = CosmosConfigEntry[String](
+    key = CosmosConfigNames.ChangeFeedBatchCheckpointLocation,
+    mandatory = false,
+    parseFromStringFunction = location => location,
+    helpMessage = "Location of the checkpoint file used for a change feed query via batch. In Spark streaming the " +
+      "`checkpointLocation` is used (independent of which Spark connector gets used) - but for Batch this " +
+      "proprietary property needs to be used. If no file exists at the location the StartFrom settings are applied " +
+      "instead. If this config is set and a file exists the StartFrom settings are ignored and instead the change " +
+      "feed will be processed from the previous position.")
+
   private def validateStartFromMode(startFrom: String): ChangeFeedStartFromMode = {
     Option(startFrom).fold(DefaultStartFromMode)(sf => {
       val trimmed = sf.trim
@@ -1088,12 +1151,14 @@ private object CosmosChangeFeedConfig {
       case Some(PointInTime) => CosmosConfigEntry.parse(cfg, startFromPointInTime)
       case _ => None
     }
+    val batchCheckpointLocationParsed = CosmosConfigEntry.parse(cfg, batchCheckpointLocation)
 
     CosmosChangeFeedConfig(
       changeFeedModeParsed.getOrElse(DefaultChangeFeedMode),
       startFromModeParsed.getOrElse(DefaultStartFromMode),
       startFromPointInTimeParsed,
-      maxItemCountPerTriggerHintParsed)
+      maxItemCountPerTriggerHintParsed,
+      batchCheckpointLocationParsed)
   }
 }
 

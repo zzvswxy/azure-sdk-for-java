@@ -25,7 +25,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.ExpressRouteServiceProvidersClient;
 import com.azure.resourcemanager.network.fluent.models.ExpressRouteServiceProviderInner;
 import com.azure.resourcemanager.network.models.ExpressRouteServiceProviderListResult;
@@ -33,8 +32,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in ExpressRouteServiceProvidersClient. */
 public final class ExpressRouteServiceProvidersClientImpl implements ExpressRouteServiceProvidersClient {
-    private final ClientLogger logger = new ClientLogger(ExpressRouteServiceProvidersClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ExpressRouteServiceProvidersService service;
 
@@ -105,7 +102,7 @@ public final class ExpressRouteServiceProvidersClientImpl implements ExpressRout
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -148,7 +145,7 @@ public final class ExpressRouteServiceProvidersClientImpl implements ExpressRout
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service

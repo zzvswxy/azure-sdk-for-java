@@ -14,6 +14,7 @@ import com.azure.core.annotation.HostParam;
 import com.azure.core.annotation.Patch;
 import com.azure.core.annotation.PathParam;
 import com.azure.core.annotation.Put;
+import com.azure.core.annotation.QueryParam;
 import com.azure.core.annotation.ReturnType;
 import com.azure.core.annotation.ServiceInterface;
 import com.azure.core.annotation.ServiceMethod;
@@ -23,7 +24,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.FirewallPolicyIdpsSignaturesOverridesClient;
 import com.azure.resourcemanager.network.fluent.models.SignaturesOverridesInner;
 import com.azure.resourcemanager.network.fluent.models.SignaturesOverridesListInner;
@@ -35,8 +35,6 @@ import reactor.core.publisher.Mono;
  */
 public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
     implements FirewallPolicyIdpsSignaturesOverridesClient {
-    private final ClientLogger logger = new ClientLogger(FirewallPolicyIdpsSignaturesOverridesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final FirewallPolicyIdpsSignaturesOverridesService service;
 
@@ -76,6 +74,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
             @PathParam("resourceGroupName") String resourceGroupName,
             @PathParam("firewallPolicyName") String firewallPolicyName,
             @PathParam("subscriptionId") String subscriptionId,
+            @QueryParam("api-version") String apiVersion,
             @BodyParam("application/json") SignaturesOverridesInner parameters,
             @HeaderParam("Accept") String accept,
             Context context);
@@ -91,6 +90,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
             @PathParam("resourceGroupName") String resourceGroupName,
             @PathParam("firewallPolicyName") String firewallPolicyName,
             @PathParam("subscriptionId") String subscriptionId,
+            @QueryParam("api-version") String apiVersion,
             @BodyParam("application/json") SignaturesOverridesInner parameters,
             @HeaderParam("Accept") String accept,
             Context context);
@@ -106,6 +106,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
             @PathParam("resourceGroupName") String resourceGroupName,
             @PathParam("firewallPolicyName") String firewallPolicyName,
             @PathParam("subscriptionId") String subscriptionId,
+            @QueryParam("api-version") String apiVersion,
             @HeaderParam("Accept") String accept,
             Context context);
 
@@ -120,6 +121,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
             @PathParam("resourceGroupName") String resourceGroupName,
             @PathParam("firewallPolicyName") String firewallPolicyName,
             @PathParam("subscriptionId") String subscriptionId,
+            @QueryParam("api-version") String apiVersion,
             @HeaderParam("Accept") String accept,
             Context context);
     }
@@ -164,6 +166,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
         } else {
             parameters.validate();
         }
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -174,6 +177,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                             resourceGroupName,
                             firewallPolicyName,
                             this.client.getSubscriptionId(),
+                            apiVersion,
                             parameters,
                             accept,
                             context))
@@ -221,6 +225,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
         } else {
             parameters.validate();
         }
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -229,6 +234,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                 resourceGroupName,
                 firewallPolicyName,
                 this.client.getSubscriptionId(),
+                apiVersion,
                 parameters,
                 accept,
                 context);
@@ -249,14 +255,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
     public Mono<SignaturesOverridesInner> patchAsync(
         String resourceGroupName, String firewallPolicyName, SignaturesOverridesInner parameters) {
         return patchWithResponseAsync(resourceGroupName, firewallPolicyName, parameters)
-            .flatMap(
-                (Response<SignaturesOverridesInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -334,6 +333,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
         } else {
             parameters.validate();
         }
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -344,6 +344,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                             resourceGroupName,
                             firewallPolicyName,
                             this.client.getSubscriptionId(),
+                            apiVersion,
                             parameters,
                             accept,
                             context))
@@ -391,6 +392,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
         } else {
             parameters.validate();
         }
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -399,6 +401,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                 resourceGroupName,
                 firewallPolicyName,
                 this.client.getSubscriptionId(),
+                apiVersion,
                 parameters,
                 accept,
                 context);
@@ -419,14 +422,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
     public Mono<SignaturesOverridesInner> putAsync(
         String resourceGroupName, String firewallPolicyName, SignaturesOverridesInner parameters) {
         return putWithResponseAsync(resourceGroupName, firewallPolicyName, parameters)
-            .flatMap(
-                (Response<SignaturesOverridesInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -498,6 +494,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -508,6 +505,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                             resourceGroupName,
                             firewallPolicyName,
                             this.client.getSubscriptionId(),
+                            apiVersion,
                             accept,
                             context))
             .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
@@ -548,6 +546,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -556,6 +555,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                 resourceGroupName,
                 firewallPolicyName,
                 this.client.getSubscriptionId(),
+                apiVersion,
                 accept,
                 context);
     }
@@ -573,14 +573,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<SignaturesOverridesInner> getAsync(String resourceGroupName, String firewallPolicyName) {
         return getWithResponseAsync(resourceGroupName, firewallPolicyName)
-            .flatMap(
-                (Response<SignaturesOverridesInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -649,6 +642,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -659,6 +653,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                             resourceGroupName,
                             firewallPolicyName,
                             this.client.getSubscriptionId(),
+                            apiVersion,
                             accept,
                             context))
             .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
@@ -699,6 +694,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -707,6 +703,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
                 resourceGroupName,
                 firewallPolicyName,
                 this.client.getSubscriptionId(),
+                apiVersion,
                 accept,
                 context);
     }
@@ -724,14 +721,7 @@ public final class FirewallPolicyIdpsSignaturesOverridesClientImpl
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<SignaturesOverridesListInner> listAsync(String resourceGroupName, String firewallPolicyName) {
         return listWithResponseAsync(resourceGroupName, firewallPolicyName)
-            .flatMap(
-                (Response<SignaturesOverridesListInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**

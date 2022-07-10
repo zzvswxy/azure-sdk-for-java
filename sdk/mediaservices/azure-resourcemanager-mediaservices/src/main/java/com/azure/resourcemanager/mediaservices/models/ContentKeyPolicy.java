@@ -78,6 +78,13 @@ public interface ContentKeyPolicy {
     List<ContentKeyPolicyOption> options();
 
     /**
+     * Gets the name of the resource group.
+     *
+     * @return the name of the resource group.
+     */
+    String resourceGroupName();
+
+    /**
      * Gets the inner com.azure.resourcemanager.mediaservices.fluent.models.ContentKeyPolicyInner object.
      *
      * @return the inner object.
@@ -223,7 +230,7 @@ public interface ContentKeyPolicy {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a Content Key Policy including secret values.
+     * @return a Content Key Policy including secret values along with {@link Response}.
      */
     Response<ContentKeyPolicyProperties> getPolicyPropertiesWithSecretsWithResponse(Context context);
 }

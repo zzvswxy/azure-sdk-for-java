@@ -1,6 +1,6 @@
 # Release History
 
-## 4.4.0-beta.6 (Unreleased)
+## 4.5.0-beta.1 (Unreleased)
 
 ### Features Added
 
@@ -9,6 +9,52 @@
 ### Bugs Fixed
 
 ### Other Changes
+
+## 4.4.4 (2022-07-06)
+
+### Other Changes
+
+#### Dependency Updates
+- Upgraded `azure-core` dependency to `1.30.0`.
+- Upgraded `azure-core-http-netty` dependency to `1.12.3`.
+
+## 4.4.3 (2022-06-10)
+
+### Other Changes
+
+#### Dependency Updates
+- Upgraded `azure-core` dependency to `1.29.1`.
+- Upgraded `azure-core-http-netty` dependency to `1.12.2`.
+
+## 4.4.2 (2022-05-10)
+
+### Other Changes
+
+#### Dependency Updates
+- Upgraded `azure-core` dependency to `1.28.0`.
+- Upgraded `azure-core-http-netty` dependency to `1.12.0`.
+
+## 4.4.1 (2022-04-08)
+
+### Other Changes
+
+#### Dependency Updates
+- Upgraded `azure-core` dependency to `1.27.0`.
+- Upgraded `azure-core-http-netty` dependency to `1.11.9`.
+
+## 4.4.0 (2022-03-31)
+
+### Features Added
+- Added support for service version `7.3`.
+- Implemented new traits (micro-interfaces) in `SecretClientBuilder`. This makes the experience of using client builders more consistent across libraries in the Azure SDK for Java.
+
+## 4.3.8 (2022-03-17)
+
+### Other Changes
+
+#### Dependency Updates
+- Upgraded `azure-core` dependency to `1.26.0`
+- Upgraded `azure-core-http-netty` dependency to `1.11.8`
 
 ## 4.4.0-beta.5 (2022-02-11)
 

@@ -29,7 +29,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.network.fluent.RoutingIntentsClient;
@@ -41,8 +40,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in RoutingIntentsClient. */
 public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
-    private final ClientLogger logger = new ClientLogger(RoutingIntentsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final RoutingIntentsService service;
 
@@ -191,7 +188,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
         } else {
             routingIntentParameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -261,7 +258,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
         } else {
             routingIntentParameters.validate();
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -519,7 +516,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
             return Mono
                 .error(new IllegalArgumentException("Parameter routingIntentName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -576,7 +573,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
             return Mono
                 .error(new IllegalArgumentException("Parameter routingIntentName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -606,14 +603,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
     public Mono<RoutingIntentInner> getAsync(
         String resourceGroupName, String virtualHubName, String routingIntentName) {
         return getWithResponseAsync(resourceGroupName, virtualHubName, routingIntentName)
-            .flatMap(
-                (Response<RoutingIntentInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -687,7 +677,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
             return Mono
                 .error(new IllegalArgumentException("Parameter routingIntentName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -743,7 +733,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
             return Mono
                 .error(new IllegalArgumentException("Parameter routingIntentName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -940,7 +930,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
         if (virtualHubName == null) {
             return Mono.error(new IllegalArgumentException("Parameter virtualHubName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1000,7 +990,7 @@ public final class RoutingIntentsClientImpl implements RoutingIntentsClient {
         if (virtualHubName == null) {
             return Mono.error(new IllegalArgumentException("Parameter virtualHubName is required and cannot be null."));
         }
-        final String apiVersion = "2021-05-01";
+        final String apiVersion = "2021-08-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service

@@ -134,6 +134,7 @@ public final class BuilderHelper {
         return new HttpPipelineBuilder()
             .policies(policies.toArray(new HttpPipelinePolicy[0]))
             .httpClient(httpClient)
+            .clientOptions(clientOptions)
             .build();
     }
 
@@ -200,5 +201,19 @@ public final class BuilderHelper {
      */
     public static BlobUserAgentModificationPolicy getBlobUserAgentModificationPolicy() {
         return new BlobUserAgentModificationPolicy(CLIENT_NAME, CLIENT_VERSION);
+    }
+
+    /**
+     * Validates that the client is properly configured to use https.
+     *
+     * @param objectToCheck The object to check for.
+     * @param objectName The name of the object.
+     * @param endpoint The endpoint for the client.
+     */
+    public static void httpsValidation(Object objectToCheck, String objectName, String endpoint, ClientLogger logger) {
+        if (objectToCheck != null && !BlobUrlParts.parse(endpoint).getScheme().equals(Constants.HTTPS)) {
+            throw logger.logExceptionAsError(new IllegalArgumentException(
+                "Using a(n) " + objectName + " requires https"));
+        }
     }
 }

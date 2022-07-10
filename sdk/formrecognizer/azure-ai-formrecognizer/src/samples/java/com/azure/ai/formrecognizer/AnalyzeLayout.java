@@ -7,13 +7,12 @@ import com.azure.ai.formrecognizer.models.AnalyzeResult;
 import com.azure.ai.formrecognizer.models.DocumentOperationResult;
 import com.azure.ai.formrecognizer.models.DocumentTable;
 import com.azure.core.credential.AzureKeyCredential;
+import com.azure.core.util.BinaryData;
 import com.azure.core.util.polling.SyncPoller;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -36,11 +35,11 @@ public class AnalyzeLayout {
 
         File selectionMarkDocument = new File("../formrecognizer/azure-ai-formrecognizer/src/samples/resources/"
             + "sample-forms/forms/selectionMarkForm.pdf");
-        byte[] fileContent = Files.readAllBytes(selectionMarkDocument.toPath());
-        InputStream fileStream = new ByteArrayInputStream(fileContent);
+        Path filePath = selectionMarkDocument.toPath();
+        BinaryData selectionMarkDocumentData = BinaryData.fromFile(filePath);
 
         SyncPoller<DocumentOperationResult, AnalyzeResult> analyzeLayoutResultPoller =
-            client.beginAnalyzeDocument("prebuilt-layout", fileStream, selectionMarkDocument.length());
+            client.beginAnalyzeDocument("prebuilt-layout", selectionMarkDocumentData, selectionMarkDocument.length());
 
         AnalyzeResult analyzeLayoutResult = analyzeLayoutResultPoller.getFinalResult();
 
@@ -55,7 +54,7 @@ public class AnalyzeLayout {
             documentPage.getLines().forEach(documentLine ->
                 System.out.printf("Line '%s; is within a bounding box %s.%n",
                     documentLine.getContent(),
-                    documentLine.getBoundingBox().toString()));
+                    documentLine.getBoundingPolygon().toString()));
 
             // words
             documentPage.getWords().forEach(documentWord ->
@@ -67,7 +66,7 @@ public class AnalyzeLayout {
             documentPage.getSelectionMarks().forEach(documentSelectionMark ->
                 System.out.printf("Selection mark is '%s' and is within a bounding box %s with confidence %.2f.%n",
                     documentSelectionMark.getState().toString(),
-                    documentSelectionMark.getBoundingBox().toString(),
+                    documentSelectionMark.getBoundingPolygon().toString(),
                     documentSelectionMark.getConfidence()));
         });
 
