@@ -19,6 +19,7 @@ from generate_utils import (
     get_and_update_service_from_api_specs,
     get_suffix_from_api_specs,
 )
+
 os.chdir(pwd)
 
 
@@ -40,15 +41,13 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--spec-root',
-        default =
-        'https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/',
+        default='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/',
         help = 'Spec root folder',
     )
     parser.add_argument(
         '-r',
         '--readme',
-        help =
-        'Readme path, Sample: "storage" or "specification/storage/resource-manager/readme.md"',
+        help='Readme path, Sample: "storage" or "specification/storage/resource-manager/readme.md"',
     )
     parser.add_argument('-t', '--tag', help = 'Specific tag')
     parser.add_argument('-v', '--version', help = 'Specific sdk version')
@@ -95,6 +94,7 @@ def sdk_automation(input_file: str, output_file: str):
     api_specs_file = os.path.join(base_dir, API_SPECS_FILE)
     with open(input_file, 'r') as fin:
         config = json.load(fin)
+        logging.info(f"sdk_automation input: {config}")
 
     packages = []
     readme = config['relatedReadmeMdFile']
@@ -122,12 +122,12 @@ def sdk_automation(input_file: str, output_file: str):
         tag = None
         if service == 'resources':
             with open(os.path.join(config['specFolder'], readme)) as fin:
-                tag_match = re.search('tag: (package-resources-[\S]+)',
+                tag_match = re.search(r'tag: (package-resources-\S+)',
                                         fin.read())
                 if tag_match:
                     tag = tag_match.group(1)
                 else:
-                    tag = 'package-resources-2020-10'
+                    tag = 'package-resources-2021-01'
 
         module = ARTIFACT_FORMAT.format(service)
         output_folder = OUTPUT_FOLDER_FORMAT.format(service)
@@ -162,16 +162,13 @@ def sdk_automation(input_file: str, output_file: str):
                 'eng/versioning',
                 'pom.xml',
             ],
-            'artifacts': [
-                '{0}/pom.xml'.format(output_folder),
-            ] + [
-                jar for jar in glob.glob('{0}/target/*.jar'.format(
-                    output_folder))
-            ],
-            'result':
-                'succeeded' if succeeded else 'failed',
-            'packageFolder':
-                output_folder,
+            'readmeMd': [readme],
+            'artifacts': ['{0}/pom.xml'.format(output_folder)] +
+                         [jar for jar in glob.glob('{0}/target/*.jar'.format(output_folder))],
+            'apiViewArtifact': next(iter(glob.glob('{0}/target/*-sources.jar'.format(output_folder))), None),
+            'language': 'Java',
+            'result': 'succeeded' if succeeded else 'failed',
+            'packageFolder': output_folder,
         })
 
         update_parameters(pre_suffix)
@@ -179,6 +176,9 @@ def sdk_automation(input_file: str, output_file: str):
     if not packages:
         # try data-plane codegen
         packages = sdk_automation_data(config)
+        for package in packages:
+            if len(package['path']) > 0:
+                package['packageFolder'] = package['path'][0]
 
     with open(output_file, 'w') as fout:
         output = {
@@ -237,8 +237,7 @@ def main():
             compare_with_maven_package(sdk_root, service, stable_version,
                                     current_version, module)
 
-            if args.get('auto_commit_external_change') and args.get(
-                    'user_name') and args.get('user_email'):
+            if args.get('auto_commit_external_change') and args.get('user_name') and args.get('user_email'):
                 pwd = os.getcwd()
                 try:
                     os.chdir(sdk_root)

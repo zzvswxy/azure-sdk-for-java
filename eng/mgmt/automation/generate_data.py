@@ -84,6 +84,10 @@ def sdk_automation(config: dict) -> List[dict]:
 
     if sdk_readme_abspath:
         spec_readme_abspath = os.path.join(spec_root, readme_file_path)
+
+        # TODO delete this
+        logging.info('[DEBUG!!!!!!!!!!] spec_readme_abspath:%s', spec_readme_abspath)
+
         update_readme(sdk_readme_abspath, spec_readme_abspath)
         sdk_automation_readme(sdk_readme_abspath, packages, sdk_root)
 
